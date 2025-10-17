@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Streaming Interface Project Documentation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        h1 { border-bottom: 2px solid #2c3e50; padding-bottom: 5px; }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #999;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: monospace;
+            background-color: #f4f4f4;
+            padding: 2px 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Music Streaming Interface Project Documentation</h1>
+
+    <h2>1. Project Overview & Objectives</h2>
+    <h3>Problem Statement</h3>
+    <p>
+        Users often face slow, ad-heavy, or complex interfaces when streaming music online. 
+        This project aims to build a lightweight, responsive, and ad-free music streaming interface 
+        that focuses on usability, speed, and personalized playlists.
+    </p>
+
+    <h3>Objectives</h3>
+    <ul>
+        <li>Provide seamless access to an online music catalog.</li>
+        <li>Enable users to search, play, and manage playlists easily.</li>
+        <li>Design a clean and intuitive UI/UX with smooth transitions and audio controls.</li>
+        <li>Allow admins to manage songs and metadata efficiently.</li>
+    </ul>
+
+    <h3>Key Features</h3>
+    <ul>
+        <li>User authentication (Register/Login)</li>
+        <li>Browse and search songs by name, artist, or genre</li>
+        <li>Integrated audio player (Play, Pause, Skip)</li>
+        <li>Playlist creation and management</li>
+        <li>Admin dashboard to manage songs</li>
+        <li>Responsive and mobile-friendly UI</li>
+    </ul>
+
+    <h3>Expected Outcome</h3>
+    <p>
+        A functional web app prototype where users can play and organize songs seamlessly, 
+        admins can maintain the music catalog, and the interface works efficiently on both desktop and mobile.
+    </p>
+
+    <h2>2. Technology Stack & Environment Setup</h2>
+
+    <h3>Frontend</h3>
+    <ul>
+        <li>Framework: React.js (Vite setup for fast builds)</li>
+        <li>Styling: Tailwind CSS for responsive design</li>
+        <li>State Management: Context API or Redux Toolkit</li>
+        <li>Audio Playback: HTML5 Audio API</li>
+    </ul>
+
+    <h3>Backend</h3>
+    <ul>
+        <li>Runtime: Node.js</li>
+        <li>Framework: Express.js</li>
+        <li>Middleware: CORS, JSON parser, JWT authentication</li>
+        <li>File Handling: Multer (for audio uploads, optional)</li>
+    </ul>
+
+    <h3>Database</h3>
+    <ul>
+        <li>MongoDB (hosted on MongoDB Atlas)</li>
+        <li>ODM: Mongoose</li>
+    </ul>
+
+    <h3>Development Tools</h3>
+    <ul>
+        <li>VS Code – Code editor</li>
+        <li>Postman – API testing</li>
+        <li>GitHub – Version control & repo management</li>
+        <li>Render / Vercel – Hosting</li>
+        <li>Nodemon – Hot reload during backend dev</li>
+    </ul>
+
+    <h3>Environment Setup</h3>
+    <pre><code>
+npm init -y
+npm install express mongoose cors dotenv jsonwebtoken bcrypt
+npm install nodemon --save-dev
+
+# .env
+PORT=5000
+MONGO_URI=your_mongodb_connection
+JWT_SECRET=your_secret_key
+
+npm run dev
+    </code></pre>
+
+    <h2>3. API Design & Data Model</h2>
+
+    <h3>Planned REST Endpoints</h3>
+    <table>
+        <tr>
+            <th>Method</th><th>Endpoint</th><th>Description</th><th>Access</th>
+        </tr>
+        <tr><td>POST</td><td>/api/auth/register</td><td>Register a new user</td><td>Public</td></tr>
+        <tr><td>POST</td><td>/api/auth/login</td><td>User login and token generation</td><td>Public</td></tr>
+        <tr><td>GET</td><td>/api/songs</td><td>Fetch all songs</td><td>User</td></tr>
+        <tr><td>GET</td><td>/api/songs/:id</td><td>Get specific song details</td><td>User</td></tr>
+        <tr><td>POST</td><td>/api/playlists</td><td>Create a new playlist</td><td>User</td></tr>
+        <tr><td>GET</td><td>/api/playlists/:userId</td><td>Get all playlists of a user</td><td>User</td></tr>
+        <tr><td>DELETE</td><td>/api/playlists/:id</td><td>Delete playlist</td><td>User</td></tr>
+        <tr><td>POST</td><td>/api/admin/song</td><td>Add new song</td><td>Admin</td></tr>
+        <tr><td>PUT</td><td>/api/admin/song/:id</td><td>Edit song info</td><td>Admin</td></tr>
+        <tr><td>DELETE</td><td>/api/admin/song/:id</td><td>Delete song</td><td>Admin</td></tr>
+    </table>
+
+    <h3>Sample Request / Response</h3>
+    <pre><code>
+// POST /api/auth/login - Request
+{
+  "email": "user@example.com",
+  "password": "123456"
+}
+
+// Response
+{
+  "status": "success",
+  "token": "jwt_token_here",
+  "user": {
+    "id": "u001",
+    "username": "musiclover"
+  }
+}
+    </code></pre>
+
+    <h3>Database Schema</h3>
+    <pre><code>
+// User Schema
+{
+  username: String,
+  email: String,
+  password: String,
+  playlists: [{ type: mongoose.Schema.Types.ObjectId, ref: "Playlist" }]
+}
+
+// Song Schema
+{
+  title: String,
+  artist: String,
+  genre: String,
+  url: String,
+  coverImage: String
+}
+
+// Playlist Schema
+{
+  name: String,
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  songs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Song" }]
+}
+    </code></pre>
+
+    <h2>4. Front-End UI/UX Plan</h2>
+
+    <h3>Wireframes & Pages</h3>
+    <ul>
+        <li>Login / Register: Authentication screen</li>
+        <li>Home Page: Trending songs & search bar</li>
+        <li>Song List: Shows results with play buttons</li>
+        <li>Player Bar: Sticky bottom bar for Play/Pause/Skip</li>
+        <li>Playlist Page: View, create, and edit playlists</li>
+        <li>Admin Dashboard: Manage songs and uploads</li>
+    </ul>
+
+    <h3>Navigation Flow</h3>
+    <pre><code>
+Login → Home → Song List → Player → Playlist → Logout
+                 ↳ Admin → Add/Edit/Delete Songs
+    </code></pre>
+
+    <h3>State Management Approach</h3>
+    <ul>
+        <li>Global State: Context API (Auth, Playlist, Player state)</li>
+        <li>Local State: useState for forms and UI toggles</li>
+        <li>API Calls: Axios hooks</li>
+        <li>Persistent Data: JWT stored in localStorage</li>
+    </ul>
+
+    <h2>5. Development & Deployment Plan</h2>
+
+    <h3>Team Roles</h3>
+    <table>
+        <tr><th>Role</th><th>Responsibility</th></tr>
+        <tr><td>Frontend Developer</td><td>React UI, Player logic, State management</td></tr>
+        <tr><td>Backend Developer</td><td>API routes, database models, JWT auth</td></tr>
+        <tr><td>UI/UX Designer</td><td>Wireframes, page layouts, responsive design</td></tr>
+        <tr><td>QA Tester</td><td>Testing, bug reporting, validation</td></tr>
+        <tr><td>Project Manager</td><td>Task allocation, Git merges, deployment</td></tr>
+    </table>
+
+    <h3>Git Workflow</h3>
+    <ul>
+        <li>main – stable release</li>
+        <li>dev – staging branch</li>
+        <li>feature/&lt;module&gt; – feature branches</li>
+        <li>Pull requests reviewed before merging into main</li>
+    </ul>
+
+    <h3>Testing Approach</h3>
+    <ul>
+        <li>Backend Tests: API validation using Postman</li>
+        <li>Frontend Tests: Manual UI validation, input error checks</li>
+        <li>Integration: Verify end-to-end flows (login → play → playlist)</li>
+        <li>Acceptance: Check features against acceptance criteria</li>
+    </ul>
+
+    <h3>Hosting / Deployment Strategy</h3>
+    <table>
+        <tr><th>Component</th><th>Platform</th></tr>
+        <tr><td>Frontend</td><td>Vercel / Netlify</td></tr>
+        <tr><td>Backend</td><td>Render / Railway</td></tr>
+        <tr><td>Database</td><td>MongoDB Atlas</td></tr>
+        <tr><td>Domain</td><td>Free subdomain via Vercel or custom domain</td></tr>
+    </table>
+    <p>Deployment Steps:</p>
+    <ol>
+        <li>Push code to GitHub main branch</li>
+        <li>Auto-deploy backend from Render and frontend from Vercel</li>
+        <li>Set environment variables online (MONGO_URI, JWT_SECRET)</li>
+        <li>Test deployed endpoints and frontend functionality</li>
+    </ol>
+
+</body>
+</html>
