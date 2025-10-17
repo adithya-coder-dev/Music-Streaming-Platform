@@ -1,10 +1,12 @@
-I'd be happy to create a README for your project\! Since you've built a **login-free music player** application, this README is structured to help users and developers quickly understand, set up, and use your code.
+No problem\! I'll update the README to include the live demo link in the new "Links" section.
 
-Here is the README:
+Here is the revised README:
 
 # StreamWave Music Player 🎵
 
 StreamWave is a modern, single-page web application (SPA) music player built using pure HTML, CSS, and JavaScript. It features a responsive design, dynamic content filtering, playback controls (play/pause, next/previous, shuffle, repeat), and a dark/light mode toggle.
+
+-----
 
 ## ✨ Features
 
@@ -60,12 +62,8 @@ The JavaScript file is divided into clear sections:
 | Section | Description |
 | :--- | :--- |
 | **1. Data Structure** | Defines the main `playlist` array and global state variables. |
-| **2. DOM Element Selectors**| Caches all necessary HTML elements. |
-| **3. Initialization** | The `initializeApp()` function runs on load, setting up the UI and initial player state. |
 | **4. Player Functions** | Logic for `loadSong`, `playSong`, `nextSong`, etc., interacting with the `<audio>` element. |
-| **5. Navigation & Theme** | Logic for screen switching and the `toggleTheme` function. |
 | **6. Content Rendering** | Functions for displaying the track lists, handling category clicks, and search filtering. |
-| **7. Final Initialization** | Attaches all event listeners for the player, navigation, and input fields. |
 
 ### Adding New Songs
 
@@ -84,7 +82,11 @@ const playlist = [
 ];
 ```
 
-Make sure to also update the `allCategories` array if you introduce new categories.
+-----
+
+## 🔗 Links
+
+  - **Live Demo** - [https://adithya-coder-dev.github.io/Music-Streaming-Platform/](https://adithya-coder-dev.github.io/Music-Streaming-Platform/)
 
 -----
 
@@ -94,13 +96,3 @@ Make sure to also update the `allCategories` array if you introduce new categori
   * **CSS3**
   * **JavaScript (ES6+)**
   * **Font Awesome** (for icons)
-
-## 🤝 Contributors
-* Adithya.M
-* Mari muthu.K
-* Abiahek raj.R
-
-
-## Demo:
-     - **[Your Link Text Here](https://www.google.com/search?q=https://your-url-here.com)** -
-
