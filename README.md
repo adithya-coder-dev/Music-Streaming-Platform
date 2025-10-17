@@ -101,3 +101,6 @@ Make sure to also update the `allCategories` array if you introduce new categori
 * Abiahek raj.R
 
 
+## Demo:
+    https://adithya-coder-dev.github.io/Music-Streaming-Platform/
+
