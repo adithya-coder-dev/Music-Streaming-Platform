@@ -1,36 +1,36 @@
 // --- 1. Data Structure: The Playlist ---
 const playlist = [
     {
-        title: "Dreaming Awake",
-        artist: "The Code Artist",
-        src: "song1.mp3",
+        title: "Imagine-Dragons-Natural",
+        artist: "Imagine-Dragons",
+        src: "song1.mp3.mpeg",
         albumArt: "album1.png",
-        categories: ["Chill", "Indie"] 
+        categories: ["Motivation", "Rock"] 
     },
     {
-        title: "Sunset Drive",
-        artist: "Synthwave Master",
-        src: "song2.mp3",
+        title: "HanumanKind-Run-It-Up",
+        artist: "Sooraj Cheruka",
+        src: "song2.mp3.mpeg",
         albumArt: "album2.png",
-        categories: ["Workout", "Synthwave", "Electronic"] 
+        categories: ["Workout", "Rap", "Electronic"] 
     },
     {
-        title: "Acoustic Serenity",
-        artist: "J. Doe",
-        src: "song3.mp3",
+        title: "Cradles",
+        artist: "Sub-Urabn",
+        src: "song3.mp3.mpeg",
         albumArt: "album3.png",
-        categories: ["Acoustic", "Chill"] 
+        categories: ["Acoustic"] 
     },
     {
-        title: "Heavy Algorithm",
-        artist: "Compiler Crew",
-        src: "song4.mp3",
+        title: "Idhazhin Oram",
+        artist: "Anirudh Ravichander",
+        src: "song4.mp3.mpeg",
         albumArt: "album4.png",
-        categories: ["Metal", "Rock", "Workout"] 
+        categories: ["Heart", "love"] 
     },
 ];
 
-const allCategories = ["All", "Chill", "Workout", "Indie", "Synthwave", "Acoustic", "Electronic", "Metal", "Rock"];
+const allCategories = ["All", "Chill", "Heart", "Rap", "Synthwave", "Acoustic", "Electronic", "Metal", "love" , "Rock"];
 
 let currentSongIndex = 0;
 let isPlaying = false;
