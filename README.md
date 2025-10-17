@@ -100,4 +100,4 @@ const playlist = [
 ## 🤝 Contributors
 * Adithya.M
 * Mari muthu.K
-* Abiahek raj.R
+* Abishek raj.R
