@@ -1,115 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StreamWave - Music Player</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamWave - Music Player</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body class="dark-mode">
 
-    <div id="app-container"> 
-        <div class="main-container">
-            <aside class="sidebar">
-                <h1 class="logo">StreamWave</h1>
-                <nav>
-                    <ul>
-                        <li id="nav-home" class="active"><i class="fas fa-home"></i> Home</li>
-                        <li id="nav-search"><i class="fas fa-search"></i> Search</li>
-                        <li id="nav-library"><i class="fas fa-compact-disc"></i> Library</li>
-                        <li><i class="fas fa-list-ul"></i> Playlists</li>
-                    </ul>
-                </nav>
-                <div class="settings">
-                    <button id="theme-toggle-btn">
-                        <i class="fas fa-moon"></i>
-                    </button>
-                </div>
-                <div class="user-profile">
-                    <span id="display-username"><i class="fas fa-user-circle"></i> Guest Mode</span>
-                    </div>
-            </aside>
+    <div id="app-container"> 
+        <div class="main-container">
+            <aside class="sidebar">
+                <h1 class="logo">StreamWave</h1>
+                <nav>
+                    <ul>
+                        <li id="nav-home" class="active"><i class="fas fa-home"></i> Home</li>
+                        <li id="nav-search"><i class="fas fa-search"></i> Search</li>
+                        <li id="nav-library"><i class="fas fa-compact-disc"></i> Library</li>
+                        <li id="nav-playlists"><i class="fas fa-list-ul"></i> Playlists</li>
+                    </ul>
+                </nav>
+                <div class="settings">
+                    <button id="theme-toggle-btn">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+                <div class="user-profile">
+                    <span id="display-username"><i class="fas fa-user-circle"></i> Guest Mode</span>
+                    </div>
+            </aside>
 
-            <main class="content">
-                
-                <div id="content-home">
-                    <h2>Good Evening, <span id="greeting-username">Guest!</span></h2>
-                    
-                    <div id="category-list-container" class="category-selector">
-                    </div>
-                    
-                    <h3>Quick Picks</h3>
-                    <div class="quick-picks-grid">
-                        <div class="pick-card"><img src="album1.png" alt="Album Art" class="card-img"><span class="card-title">Top Hits 2024</span></div>
-                        <div class="pick-card"><img src="album2.png" alt="Album Art" class="card-img"><span class="card-title">Relaxing Jazz</span></div>
-                    </div>
+            <main class="content">
+                
+                <div id="content-home">
+                    <h2>Welcome to StreamWave, <span id="greeting-username">Guest!</span></h2>
+                    
+                    <div id="category-list-container" class="category-selector"></div>
+                    
+                    <h3>Quick Picks</h3>
+                    <div class="quick-picks-grid">
+                        <div class="pick-card"><img src="album1.png" alt="Album Art" class="card-img"><span class="card-title">Top Hits 2024</span></div>
+                        <div class="pick-card"><img src="album2.png" alt="Album Art" class="card-img"><span class="card-title">Relaxing Jazz</span></div>
+                    </div>
 
-                    <h3>Browse by Category</h3>
-                    <div id="home-track-list" class="track-list">
-                    </div>
-                </div>
+                    <h3>Browse by Category</h3>
+                    <div id="home-track-list" class="track-list"></div>
+                </div>
 
-                <div id="content-search" style="display: none;">
-                    <div class="search-container">
-                        <input type="text" id="search-input" placeholder="What do you want to listen to?" />
-                        <button><i class="fas fa-search"></i></button>
-                    </div>
-                    
-                    <h3>Browse All</h3>
-                    <div class="genre-grid">
-                        <div class="genre-card pop">Pop</div>
-                        <div class="genre-card rock">Rock</div>
-                        <div class="genre-card jazz">Jazz</div>
-                        <div class="genre-card chill">Chill</div>
-                        <div class="genre-card metal">Metal</div>
-                        <div class="genre-card acoustic">Acoustic</div>
-                    </div>
-                    <div id="search-results-list" class="track-list" style="margin-top: 30px;"></div>
-                </div>
+                <div id="content-search" style="display: none;">
+                    <div class="search-container">
+                        <input type="text" id="search-input" placeholder="What do you want to listen to?" />
+                        <button><i class="fas fa-search"></i></button>
+                    </div>
+                    <h3>Browse All</h3>
+                    <div class="genre-grid">
+                        <div class="genre-card pop">Pop</div>
+                        <div class="genre-card rock">Rock</div>
+                        <div class="genre-card jazz">Jazz</div>
+                        <div class="genre-card chill">Chill</div>
+                        <div class="genre-card metal">Metal</div>
+                        <div class="genre-card acoustic">Acoustic</div>
+                    </div>
+                    <div id="search-results-list" class="track-list" style="margin-top: 30px;"></div>
+                </div>
 
-                <div id="content-library" style="display: none;">
-                    <h2>My Library</h2>
-                    <h3>Saved Songs</h3>
-                    <div id="library-songs-list" class="track-list"></div>
-                </div>
+                <div id="content-library" style="display: none;">
+                    <h2>My Library</h2>
+                    <h3>Saved Songs</h3>
+                    <div id="library-songs-list" class="track-list"></div>
+                </div>
 
-            </main>
-        </div>
+                <div id="content-playlists" style="display: none;">
+                    <h2>Your Playlists</h2>
+                    <button id="create-playlist-btn" class="category-btn active" style="margin-bottom: 20px;">
+                        <i class="fas fa-plus"></i> Create New Playlist
+                    </button>
+                    <div id="user-playlists-container" class="discover-carousel" style="flex-direction: column; gap: 15px;">
+                        </div>
+                </div>
 
-        <div class="now-playing-bar">
-            <div class="song-info">
-                <img src="placeholder-album.png" alt="Album Art" id="mini-album-art">
-                <div class="text">
-                    <span class="song-title">Song Title</span>
-                    <span class="artist-name">Artist Name</span>
-                </div>
-            </div>
+            </main>
+        </div>
 
-            <div class="player-controls">
-                <audio id="music-audio" src="song1.mp3"></audio>
+        <div class="now-playing-bar">
+            <div class="song-info">
+                <img src="placeholder-album.png" alt="Album Art" id="mini-album-art">
+                <div class="text">
+                    <span class="song-title">Song Title</span>
+                    <span class="artist-name">Artist Name</span>
+                </div>
+            </div>
 
-                <div class="control-buttons">
-                    <button id="shuffle-btn"><i class="fas fa-random"></i></button>
-                    <button id="prev-btn"><i class="fas fa-step-backward"></i></button>
-                    <button id="play-pause-btn"><i class="fas fa-play"></i></button>
-                    <button id="next-btn"><i class="fas fa-step-forward"></i></button>
-                    <button id="repeat-btn"><i class="fas fa-redo-alt"></i></button>
-                </div>
-                <div class="progress-bar-container">
-                    <span id="current-time">0:00</span>
-                    <input type="range" id="progress-bar" value="0" min="0" max="100">
-                    <span id="duration">3:30</span>
-                </div>
-            </div>
+            <div class="player-controls">
+                <audio id="music-audio" src="song1.mp3"></audio>
+                <div id="loading-indicator" style="display: none; color: var(--accent-color); font-size: 12px; margin-bottom: 5px;">
+                    <i class="fas fa-spinner fa-spin"></i> Loading...
+                </div>
+                <div class="control-buttons">
+                    <button id="shuffle-btn"><i class="fas fa-random"></i></button>
+                    <button id="prev-btn"><i class="fas fa-step-backward"></i></button>
+                    <button id="play-pause-btn"><i class="fas fa-play"></i></button>
+                    <button id="next-btn"><i class="fas fa-step-forward"></i></button>
+                    <button id="repeat-btn"><i class="fas fa-redo-alt"></i></button>
+                </div>
+                <div class="progress-bar-container">
+                    <span id="current-time">0:00</span>
+                    <input type="range" id="progress-bar" value="0" min="0" max="100">
+                    <span id="duration">3:30</span>
+                </div>
+            </div>
 
-            <div class="volume-controls">
-                <i class="fas fa-volume-up"></i>
-                <input type="range" id="volume-slider" min="0" max="100" value="70">
-            </div>
-        </div>
-    </div>
+            <div class="volume-controls">
+                <i class="fas fa-volume-up"></i>
+                <input type="range" id="volume-slider" min="0" max="100" value="70">
+            </div>
+        </div>
+    </div>
 
-    <script src="script.js"></script>
+    <div id="playlist-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h3>Add Song to Playlist</h3>
+            <p id="modal-song-title" style="color: var(--text-medium);"></p>
+            
+            <form id="create-new-playlist-form">
+                <input type="text" id="new-playlist-name" placeholder="New Playlist Name" required>
+                <button type="submit" class="category-btn active"><i class="fas fa-plus"></i> Create & Add</button>
+            </form>
+
+            <h4>Or Select Existing:</h4>
+            <div id="existing-playlists-container">
+                </div>
+            
+            <button id="close-modal-btn" class="logout-btn" style="margin-top: 20px;">Close</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
