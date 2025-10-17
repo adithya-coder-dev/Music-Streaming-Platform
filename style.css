@@ -1,4 +1,4 @@
-/* --- Color Variables --- */
+/* --- Color Variables (UNCHANGED) --- */
 :root {
     --player-height: 90px;
     /* Default (Dark) Mode Colors */
@@ -8,13 +8,16 @@
     --bg-sidebar: #000000;
     --text-light: #ffffff;
     --text-medium: #b3b3b3;
-    --accent-color: #1ed760; 
+    --accent-color: #1ed760;
     --card-hover: #3e3e3e;
     --input-bg: #333333;
     --error-color: #ff4d4d;
+    /* New: Interactive States */
+    --accent-hover: #159c47; /* Darker green for hover */
+    --button-focus: rgba(255, 255, 255, 0.1);
 }
 
-/* Light Mode Overrides */
+/* Light Mode Overrides (UNCHANGED) */
 body.light-mode {
     --bg-dark: #f0f0f0;
     --bg-medium: #ffffff;
@@ -22,11 +25,15 @@ body.light-mode {
     --bg-sidebar: #ffffff;
     --text-light: #121212;
     --text-medium: #535353;
+    --accent-color: #1ed760; /* Keeping accent the same for contrast */
     --card-hover: #cccccc;
     --input-bg: #e5e5e5;
+    /* Light Mode Interactive States */
+    --accent-hover: #159c47;
+    --button-focus: rgba(0, 0, 0, 0.1);
 }
 
-/* Global Styles */
+/* Global Styles (ENHANCED) */
 * {
     margin: 0;
     padding: 0;
@@ -38,24 +45,19 @@ body {
     background-color: var(--bg-dark);
     color: var(--text-light);
     overflow: hidden;
-    transition: background-color 0.3s;
+    transition: background-color 0.4s ease-in-out; /* Slower, smoother transition */
 }
 
-/* --- Login Screen Styles (REMOVED) --- 
-The following sections have been deleted:
-.auth-screen
-.login-box
-.login-box .logo
-#login-form input
-#login-form button
-.error-message 
-*/
+a {
+    text-decoration: none;
+    color: inherit;
+}
 
-/* --- Main Layout --- */
+/* --- Main Layout (MINOR ADJUSTMENTS) --- */
 #app-container {
     height: 100vh;
-    display: flex; /* Ensure it displays correctly as the top-level container */
-    flex-direction: column; 
+    display: flex;
+    flex-direction: column;
 }
 
 .main-container {
@@ -63,36 +65,55 @@ The following sections have been deleted:
     height: calc(100vh - var(--player-height));
 }
 
+/* --- Sidebar (ENHANCED) --- */
 .sidebar {
     width: 250px;
     background-color: var(--bg-sidebar);
-    padding: 20px;
+    padding: 20px 15px; /* Adjusted padding */
     display: flex;
     flex-direction: column;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
 }
 
 .sidebar nav ul {
     list-style: none;
-    margin-bottom: 20px;
+    margin-bottom: 30px; /* Increased margin */
 }
 
 .sidebar nav ul li {
-    padding: 10px 0;
+    padding: 12px 10px; /* Increased padding for larger click area */
+    margin: 4px 0;
     cursor: pointer;
     color: var(--text-medium);
-    transition: color 0.2s;
+    transition: color 0.2s, background-color 0.2s, transform 0.1s;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
 }
 
-.sidebar nav ul li:hover, .sidebar nav ul li.active {
+.sidebar nav ul li:hover {
     color: var(--text-light);
+    background-color: var(--bg-light); /* Background hover effect */
+}
+
+.sidebar nav ul li.active {
+    color: var(--text-light);
+    font-weight: bold;
+    background-color: var(--card-hover); /* Distinct active background */
+}
+
+.sidebar nav ul li:active {
+    transform: scale(0.98); /* Click interaction */
 }
 
 .sidebar i {
-    margin-right: 10px;
+    margin-right: 12px;
+    min-width: 20px; /* Ensures icons align */
+    text-align: center;
 }
 
 .settings {
-    margin-top: 20px;
+    margin-top: 25px;
 }
 
 #theme-toggle-btn {
@@ -102,12 +123,18 @@ The following sections have been deleted:
     font-size: 18px;
     cursor: pointer;
     padding: 10px 0;
+    transition: color 0.2s;
+}
+
+#theme-toggle-btn:hover {
+    color: var(--text-light);
+    transform: rotate(5deg); /* Subtle playful animation */
 }
 
 .user-profile {
     margin-top: auto;
-    padding-top: 20px;
-    border-top: 1px solid var(--bg-medium);
+    padding: 20px 10px;
+    border-top: 1px solid var(--bg-light); /* Lighter border for contrast */
     color: var(--text-medium);
     display: flex;
     flex-direction: column;
@@ -115,72 +142,85 @@ The following sections have been deleted:
     gap: 10px;
 }
 
-/* The logout button is removed from HTML, but keeping the style in case a button remains */
-.logout-btn { 
-    background-color: var(--bg-medium);
-    color: var(--text-medium);
-    border: 1px solid var(--text-medium);
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-size: 12px;
-    cursor: pointer;
-    transition: all 0.2s;
+.user-profile .username {
+    font-weight: bold;
+    color: var(--text-light);
 }
 
+/* --- Content (MINOR ADJUSTMENTS) --- */
 .content {
     flex-grow: 1;
     background-color: var(--bg-medium);
     padding: 30px;
     overflow-y: auto;
+    /* Custom scrollbar for better aesthetics */
+    scrollbar-color: var(--bg-light) var(--bg-medium);
+    scrollbar-width: thin;
 }
 
-/* --- Category Selector Styles --- */
+/* --- Category Selector Styles (ENHANCED) --- */
 .category-selector {
     display: flex;
-    gap: 10px;
+    gap: 15px; /* Increased gap */
     margin-bottom: 30px;
     overflow-x: auto;
     padding-bottom: 5px;
+    /* Hide scrollbar for a cleaner look */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+.category-selector::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
 }
 
 .category-btn {
     background-color: var(--bg-light);
     color: var(--text-medium);
-    border: 1px solid var(--text-medium);
-    padding: 8px 15px;
+    border: none; /* Removed border for a flatter look */
+    padding: 10px 18px; /* Slightly larger padding */
     border-radius: 50px;
     white-space: nowrap;
     font-size: 14px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s, transform 0.1s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.category-btn:hover {
+    background-color: var(--card-hover);
+    color: var(--text-light);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
 .category-btn.active {
     background-color: var(--accent-color);
     color: var(--bg-dark);
-    border-color: var(--accent-color);
     font-weight: bold;
+    box-shadow: 0 4px 8px rgba(30, 215, 96, 0.4); /* Accent shadow */
 }
 
-/* --- Track List Styles --- */
-.track-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+.category-btn:active {
+    transform: scale(0.95);
 }
 
+/* --- Track List Styles (ENHANCED) --- */
 .track-item {
     display: flex;
     align-items: center;
-    padding: 10px;
+    padding: 12px 15px; /* Increased padding */
     background-color: var(--bg-light);
-    border-radius: 4px;
+    border-radius: 8px; /* Softer corners */
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, transform 0.1s;
+    position: relative;
+    gap: 15px;
 }
 
 .track-item:hover {
     background-color: var(--card-hover);
+    transform: translateY(-1px); /* Lift effect on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .track-number {
@@ -188,12 +228,17 @@ The following sections have been deleted:
     text-align: center;
     color: var(--text-medium);
     transition: opacity 0.2s;
+    flex-shrink: 0;
 }
 
 .track-number i {
     color: var(--accent-color);
-    font-size: 14px;
-    display: none; /* Hidden by default */
+    font-size: 16px; /* Slightly larger icon */
+    position: absolute; /* Relative to .track-item for consistent position */
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: none;
 }
 
 .track-item:hover .track-number {
@@ -202,141 +247,321 @@ The following sections have been deleted:
 
 .track-item:hover .track-number i {
     display: inline-block;
-    position: absolute;
-    left: 40px; /* Adjust based on sidebar/padding */
-    transform: translateX(-50%);
-    opacity: 1;
 }
 
 .track-details {
     flex-grow: 1;
-    margin-left: 10px;
+    min-width: 0; /* Allows content to shrink */
 }
 
 .track-title {
     font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Feature: Ellipsis for long titles */
 }
 
 .track-artist {
     color: var(--text-medium);
-    font-size: 14px;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .track-duration {
     color: var(--text-medium);
+    font-size: 14px;
+    flex-shrink: 0;
+    min-width: 40px; /* Ensures duration doesn't jump */
 }
 
-/* --- Search Screen Styles --- */
+/* Feature: Favorite Icon (Assuming a heart icon is added to the HTML) */
+.track-actions {
+    margin-left: 15px;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.track-item:hover .track-actions {
+    opacity: 1;
+}
+
+.track-actions i {
+    color: var(--text-medium);
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.track-actions i:hover {
+    color: var(--error-color); /* Red for 'like'/'favorite' */
+    transform: scale(1.1);
+}
+
+/* --- Search Screen Styles (ENHANCED) --- */
 .search-container {
     display: flex;
     margin-bottom: 30px;
+    max-width: 600px; /* Constrain search bar width */
 }
 
 #search-input {
     flex-grow: 1;
-    padding: 10px 15px;
-    border: none;
+    padding: 12px 20px;
+    border: 2px solid transparent; /* Placeholder border */
     border-radius: 50px 0 0 50px;
     background-color: var(--input-bg);
     color: var(--text-light);
     font-size: 16px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#search-input:focus {
+    outline: none;
+    border-color: var(--accent-color); /* Feature: Accent border on focus */
+    box-shadow: 0 0 0 2px rgba(30, 215, 96, 0.5);
 }
 
 .search-container button {
     background-color: var(--accent-color);
     border: none;
     color: var(--bg-dark);
-    padding: 10px 20px;
+    padding: 12px 25px;
     border-radius: 0 50px 50px 0;
     cursor: pointer;
     font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.search-container button:hover {
+    background-color: var(--accent-hover);
+}
+
+.search-container button:active {
+    transform: scale(0.98);
 }
 
 .genre-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 15px;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Larger cards */
+    gap: 20px; /* Increased gap */
 }
 
 .genre-card {
-    background-color: #505050; 
+    background-color: #505050;
     padding: 20px;
-    border-radius: 8px;
+    border-radius: 12px; /* More rounded corners */
     font-weight: bold;
     font-size: 18px;
-    height: 100px;
+    height: 120px; /* Taller card */
     display: flex;
     align-items: flex-end;
     color: var(--text-light);
     cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
-/* --- Now Playing Bar (Player Controls) --- */
+.genre-card:hover {
+    transform: translateY(-5px) scale(1.02); /* Pop-up and scale effect */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Feature: Random color background for genre cards (requires inline style or JS class) */
+.genre-card-art {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 60px;
+    height: 60px;
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: rotate(25deg) translate(10px, -10px);
+    border-radius: 4px;
+}
+
+/* --- Now Playing Bar (Player Controls) (ENHANCED) --- */
 .now-playing-bar {
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
     height: var(--player-height);
-    background-color: var(--bg-light); 
-    border-top: 1px solid var(--bg-dark);
+    background-color: var(--bg-light);
+    border-top: 1px solid var(--card-hover); /* Smoother separation */
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 20px;
+    z-index: 1000;
 }
 
+/* Feature: Full-screen player button hint */
 .song-info {
     display: flex;
     align-items: center;
     width: 30%;
+    cursor: pointer; /* Suggests clicking brings up a full-screen player */
+    transition: opacity 0.2s;
+}
+
+.song-info:hover {
+    opacity: 0.8;
 }
 
 .song-info img {
-    width: 55px;
-    height: 55px;
+    width: 60px; /* Slightly larger art */
+    height: 60px;
+    border-radius: 4px; /* Soft corners on album art */
     object-fit: cover;
     margin-right: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 .player-controls {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 40%;
+    width: 45%; /* Increased width for controls */
 }
 
 .control-buttons button {
     background: none;
     border: none;
     color: var(--text-medium);
-    font-size: 18px;
-    margin: 0 10px;
+    font-size: 20px; /* Slightly larger icons */
+    margin: 0 12px;
     cursor: pointer;
-    transition: color 0.2s;
+    transition: color 0.2s, transform 0.1s;
+    padding: 5px; /* Added padding for a larger click area */
+}
+
+.control-buttons button:hover {
+    color: var(--text-light);
+}
+
+.control-buttons button:active {
+    transform: scale(0.9);
 }
 
 #play-pause-btn {
-    font-size: 30px;
+    font-size: 40px; /* Larger play button */
     color: var(--text-light);
+    transition: color 0.2s, transform 0.1s;
+}
+
+#play-pause-btn:hover {
+    color: var(--accent-color);
 }
 
 .progress-bar-container {
     display: flex;
     align-items: center;
-    width: 100%;
+    width: 80%; /* Constrain progress bar */
     margin-top: 10px;
     font-size: 12px;
     color: var(--text-medium);
 }
 
+/* Feature: Custom Range Input for Progress Bar */
 #progress-bar {
     flex-grow: 1;
     margin: 0 10px;
+    height: 6px; /* Thicker bar */
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    background: #535353;
+    border-radius: 3px;
+    transition: height 0.2s;
+}
+
+/* Progress Bar Track (Unfilled) */
+#progress-bar::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 6px;
+    background: #535353;
+    border-radius: 3px;
+}
+
+/* Progress Bar Thumb (Draggable handle) */
+#progress-bar::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--text-light);
+    cursor: pointer;
+    margin-top: -3px;
+    opacity: 0; /* Hidden by default */
+    transition: opacity 0.2s, transform 0.1s;
+}
+
+/* Show thumb on hover/focus */
+.progress-bar-container:hover #progress-bar::-webkit-slider-thumb,
+#progress-bar:focus::-webkit-slider-thumb {
+    opacity: 1;
+}
+
+/* Feature: Volume Control and Other Utilities */
+.volume-controls {
+    display: flex;
+    align-items: center;
+    width: 25%;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.volume-controls i {
+    color: var(--text-medium);
+    font-size: 18px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.volume-controls i:hover {
+    color: var(--text-light);
+}
+
+/* Feature: Custom Range Input for Volume Slider */
+#volume-slider {
+    width: 100px;
     height: 4px;
     cursor: pointer;
     -webkit-appearance: none;
     appearance: none;
     background: #535353;
     border-radius: 2px;
+}
+
+#volume-slider::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 4px;
+    background: #535353;
+    border-radius: 2px;
+}
+
+#volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    cursor: pointer;
+    margin-top: -3px;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.volume-controls:hover #volume-slider::-webkit-slider-thumb,
+#volume-slider:focus::-webkit-slider-thumb {
+    opacity: 1;
+}
+
+/* Feature: Mute button state (requires an HTML class) */
+.volume-controls i.muted {
+    color: var(--error-color);
 }
