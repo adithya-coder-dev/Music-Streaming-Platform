@@ -1,50 +1,46 @@
 // --- 1. Data Structure: The Playlist ---
 const playlist = [
-    {
-        title: "Imagine-Dragons-Natural",
-        artist: "Imagine-Dragons",
-        src: "song1.mp3.mpeg",
-        albumArt: "album1.png",
-        categories: ["Motivation", "Rock"] 
-    },
-    {
-        title: "HanumanKind-Run-It-Up",
-        artist: "Sooraj Cheruka",
-        src: "song2.mp3.mpeg",
-        albumArt: "album2.png",
-        categories: ["Workout", "Rap", "Electronic"] 
-    },
-    {
-        title: "Cradles",
-        artist: "Sub-Urabn",
-        src: "song3.mp3.mpeg",
-        albumArt: "album3.png",
-        categories: ["Acoustic"] 
-    },
-    {
-        title: "Idhazhin Oram",
-        artist: "Anirudh Ravichander",
-        src: "song4.mp3.mpeg",
-        albumArt: "album4.png",
-        categories: ["Heart", "love"] 
-    },
+    {
+        title: "Imagine-Dragons-Natural",
+        artist: "Imagine-Dragons",
+        src: "song1.mp3.mpeg",
+        albumArt: "album1.png",
+        categories: ["Motivation", "Rock"] 
+    },
+    {
+        title: "HanumanKind-Run-It-Up",
+        artist: "Sooraj Cheruka",
+        src: "song2.mp3.mpeg",
+        albumArt: "album2.png",
+        categories: ["Workout", "Rap", "Electronic"] 
+    },
+    {
+        title: "Cradles",
+        artist: "Sub-Urabn",
+        src: "song3.mp3.mpeg",
+        albumArt: "album3.png",
+        categories: ["Acoustic"] 
+    },
+    {
+        title: "Idhazhin Oram",
+        artist: "Anirudh Ravichander",
+        src: "song4.mp3.mpeg",
+        albumArt: "album4.png",
+        categories: ["Heart", "love"] 
+    },
 ];
 
 const allCategories = ["All", "Chill", "Heart", "Rap", "Synthwave", "Acoustic", "Electronic", "Metal", "love" , "Rock"];
 
+// --- State Variables ---
 let currentSongIndex = 0;
 let isPlaying = false;
 let isShuffling = false;
-let repeatMode = 'none'; 
-let activeCategory = 'All'; 
+let repeatMode = 'none'; 
+let activeCategory = 'All'; 
 
-// --- 2. DOM Element Selectors ---
-// Application Elements
-const loginScreen = document.getElementById('login-screen');
+// --- 2. DOM Element Selectors (Cleaned) ---
 const appContainer = document.getElementById('app-container');
-const loginForm = document.getElementById('login-form');
-const logoutBtn = document.getElementById('logout-btn');
-const loginError = document.getElementById('login-error');
 
 // User Display Elements
 const displayUsername = document.getElementById('display-username');
@@ -87,152 +83,101 @@ const searchResultsList = document.getElementById('search-results-list');
 const librarySongsList = document.getElementById('library-songs-list');
 
 
-// --- 3. Authentication Functions ---
+// --- 3. Initialization Function (Replaces Auth Logic) ---
 
-const SIMULATED_CREDENTIALS = {
-    email: "user@example.com",
-    password: "password",
-    username: "Demo User"
-};
-
-function checkAuth() {
-    const user = localStorage.getItem('currentUser');
-    if (user) {
-        const userData = JSON.parse(user);
-        showApp(userData.username);
-    } else {
-        showLogin();
-    }
+function initializeApp() {
+    // Set static user display (since login is gone)
+    displayUsername.innerHTML = `<i class="fas fa-user-circle"></i> Guest Mode`;
+    greetingUsername.textContent = "Guest";
+    
+    // Load initial content and player state
+    loadSong(currentSongIndex);
+    renderCategories();
+    renderHomeTrackList();
+    renderLibrary();
 }
 
-function handleLogin(e) {
-    e.preventDefault();
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
 
-    if (email === SIMULATED_CREDENTIALS.email && password === SIMULATED_CREDENTIALS.password) {
-        const userData = { username: SIMULATED_CREDENTIALS.username };
-        localStorage.setItem('currentUser', JSON.stringify(userData));
-        loginError.style.display = 'none';
-        showApp(SIMULATED_CREDENTIALS.username);
-    } else {
-        loginError.textContent = "Invalid email or password.";
-        loginError.style.display = 'block';
-    }
-}
-
-function showApp(username) {
-    loginScreen.style.display = 'none';
-    appContainer.style.display = 'flex'; 
-    
-    displayUsername.innerHTML = `<i class="fas fa-user-circle"></i> ${username}`;
-    greetingUsername.textContent = username;
-    
-    loadSong(currentSongIndex);
-    renderCategories();
-    renderHomeTrackList();
-    renderLibrary();
-}
-
-function showLogin() {
-    appContainer.style.display = 'none';
-    loginScreen.style.display = 'flex';
-    audio.pause();
-    isPlaying = false;
-    playPauseIcon.classList.remove('fa-pause');
-    playPauseIcon.classList.add('fa-play');
-}
-
-function handleLogout() {
-    localStorage.removeItem('currentUser');
-    showLogin();
-}
-
-// Attach Auth Listeners
-loginForm.addEventListener('submit', handleLogin);
-logoutBtn.addEventListener('click', handleLogout);
-
-
-// --- 4. Player Functions ---
+// --- 4. Player Functions (UNCHANGED) ---
 
 function formatTime(seconds) {
-    if (isNaN(seconds) || seconds < 0) return "0:00";
-    const min = Math.floor(seconds / 60);
-    const sec = Math.floor(seconds % 60);
-    return `${min}:${sec < 10 ? '0' : ''}${sec}`;
+    if (isNaN(seconds) || seconds < 0) return "0:00";
+    const min = Math.floor(seconds / 60);
+    const sec = Math.floor(seconds % 60);
+    return `${min}:${sec < 10 ? '0' : ''}${sec}`;
 }
 
 function loadSong(songIndex) {
-    const song = playlist[songIndex];
+    const song = playlist[songIndex];
 
-    audio.src = song.src;
-    songTitleDisplay.textContent = song.title;
-    artistNameDisplay.textContent = song.artist;
-    miniAlbumArt.src = song.albumArt || "placeholder-album.png"; 
+    audio.src = song.src;
+    songTitleDisplay.textContent = song.title;
+    artistNameDisplay.textContent = song.artist;
+    miniAlbumArt.src = song.albumArt || "placeholder-album.png"; 
 
-    audio.load();
-    audio.onloadedmetadata = () => {
-        progressBar.max = audio.duration;
-        durationDisplay.textContent = formatTime(audio.duration);
-        if (isPlaying) playSong();
-    };
+    audio.load();
+    audio.onloadedmetadata = () => {
+        progressBar.max = audio.duration;
+        durationDisplay.textContent = formatTime(audio.duration);
+        if (isPlaying) playSong();
+    };
 }
 
 function playSong() {
-    audio.play();
-    isPlaying = true;
-    playPauseIcon.classList.remove('fa-play');
-    playPauseIcon.classList.add('fa-pause');
+    audio.play();
+    isPlaying = true;
+    playPauseIcon.classList.remove('fa-play');
+    playPauseIcon.classList.add('fa-pause');
 }
 
 function pauseSong() {
-    audio.pause();
-    isPlaying = false;
-    playPauseIcon.classList.remove('fa-pause');
-    playPauseIcon.classList.add('fa-play');
+    audio.pause();
+    isPlaying = false;
+    playPauseIcon.classList.remove('fa-pause');
+    playPauseIcon.classList.add('fa-play');
 }
 
 function nextSong() {
-    if (isShuffling) {
-        currentSongIndex = Math.floor(Math.random() * playlist.length);
-    } else {
-        currentSongIndex = (currentSongIndex + 1) % playlist.length;
-    }
-    loadSong(currentSongIndex);
-    playSong();
+    if (isShuffling) {
+        currentSongIndex = Math.floor(Math.random() * playlist.length);
+    } else {
+        currentSongIndex = (currentSongIndex + 1) % playlist.length;
+    }
+    loadSong(currentSongIndex);
+    playSong();
 }
 
 function prevSong() {
-    currentSongIndex = (currentSongIndex - 1 + playlist.length) % playlist.length;
-    loadSong(currentSongIndex);
-    playSong();
+    currentSongIndex = (currentSongIndex - 1 + playlist.length) % playlist.length;
+    loadSong(currentSongIndex);
+    playSong();
 }
 
 function handleTrackClick(e) {
-    const item = e.currentTarget;
-    const index = parseInt(item.dataset.index);
-    if (!isNaN(index)) {
-        currentSongIndex = index;
-        loadSong(currentSongIndex);
-        playSong();
-    }
+    const item = e.currentTarget;
+    const index = parseInt(item.dataset.index);
+    if (!isNaN(index)) {
+        currentSongIndex = index;
+        loadSong(currentSongIndex);
+        playSong();
+    }
 }
 
 
-// --- 5. Navigation & Theme Functions ---
+// --- 5. Navigation & Theme Functions (UNCHANGED) ---
 
 function switchScreen(targetContent) {
-    allContentSections.forEach(section => {
-        section.style.display = 'none';
-    });
-    targetContent.style.display = 'block';
+    allContentSections.forEach(section => {
+        section.style.display = 'none';
+    });
+    targetContent.style.display = 'block';
 }
 
 function setActiveNav(targetNav) {
-    allNavItems.forEach(item => {
-        item.classList.remove('active');
-    });
-    targetNav.classList.add('active');
+    allNavItems.forEach(item => {
+        item.classList.remove('active');
+    });
+    targetNav.classList.add('active');
 }
 
 navHome.addEventListener('click', () => { switchScreen(contentHome); setActiveNav(navHome); });
@@ -240,154 +185,153 @@ navSearch.addEventListener('click', () => { switchScreen(contentSearch); setActi
 navLibrary.addEventListener('click', () => { switchScreen(contentLibrary); setActiveNav(navLibrary); renderLibrary(); });
 
 function toggleTheme() {
-    document.body.classList.toggle('light-mode');
-    const isLight = document.body.classList.contains('light-mode');
-    themeToggleBtn.querySelector('i').className = isLight ? 'fas fa-moon' : 'fas fa-sun';
+    document.body.classList.toggle('light-mode');
+    const isLight = document.body.classList.contains('light-mode');
+    themeToggleBtn.querySelector('i').className = isLight ? 'fas fa-moon' : 'fas fa-sun';
 }
 themeToggleBtn.addEventListener('click', toggleTheme);
 
 
-// --- 6. Content Rendering Functions (Categories, Search, Library) ---
+// --- 6. Content Rendering Functions (UNCHANGED) ---
 
 /** Generates HTML for a track item. */
 function createTrackItem(song, index) {
-    // Get duration from loaded metadata if available, otherwise use placeholder
-    const duration = audio.duration ? formatTime(audio.duration) : '0:00'; 
-    
-    return `
-        <div class="track-item" data-index="${index}">
-            <span class="track-number"><i class="fas fa-play"></i></span>
-            <div class="track-details">
-                <div class="track-title">${song.title}</div>
-                <div class="track-artist">${song.artist}</div>
-            </div>
-            <span class="track-duration">${duration}</span>
-        </div>
-    `;
+    const duration = audio.duration ? formatTime(audio.duration) : '0:00'; 
+    
+    return `
+        <div class="track-item" data-index="${index}">
+            <span class="track-number"><i class="fas fa-play"></i></span>
+            <div class="track-details">
+                <div class="track-title">${song.title}</div>
+                <div class="track-artist">${song.artist}</div>
+            </div>
+            <span class="track-duration">${duration}</span>
+        </div>
+    `;
 }
 
 /** Renders the list of categories. */
 function renderCategories() {
-    if (!categoryListContainer) return;
+    if (!categoryListContainer) return;
 
-    categoryListContainer.innerHTML = allCategories.map(cat => `
-        <button class="category-btn ${cat === activeCategory ? 'active' : ''}" data-category="${cat}">
-            ${cat}
-        </button>
-    `).join('');
+    categoryListContainer.innerHTML = allCategories.map(cat => `
+        <button class="category-btn ${cat === activeCategory ? 'active' : ''}" data-category="${cat}">
+            ${cat}
+        </button>
+    `).join('');
 
-    document.querySelectorAll('.category-btn').forEach(button => {
-        button.addEventListener('click', handleCategoryClick);
-    });
+    document.querySelectorAll('.category-btn').forEach(button => {
+        button.addEventListener('click', handleCategoryClick);
+    });
 }
 
 /** Filters tracks based on the active category and renders the list. */
 function renderHomeTrackList() {
-    const filteredTracks = playlist.filter(song => {
-        if (activeCategory === 'All') {
-            return true;
-        }
-        return song.categories.includes(activeCategory);
-    });
+    const filteredTracks = playlist.filter(song => {
+        if (activeCategory === 'All') {
+            return true;
+        }
+        return song.categories.includes(activeCategory);
+    });
 
-    homeTrackList.innerHTML = filteredTracks.map((song, index) => {
-        // Find the original index for playback
-        const originalIndex = playlist.findIndex(p => p.title === song.title && p.artist === song.artist);
-        return createTrackItem(song, originalIndex);
-    }).join('');
+    homeTrackList.innerHTML = filteredTracks.map((song, index) => {
+        const originalIndex = playlist.findIndex(p => p.title === song.title && p.artist === song.artist);
+        return createTrackItem(song, originalIndex);
+    }).join('');
 
-    document.querySelectorAll('#home-track-list .track-item').forEach(item => {
-        item.addEventListener('click', handleTrackClick);
-    });
+    document.querySelectorAll('#home-track-list .track-item').forEach(item => {
+        item.addEventListener('click', handleTrackClick);
+    });
 }
 
 function handleCategoryClick(e) {
-    const newCategory = e.currentTarget.dataset.category;
-    activeCategory = newCategory;
-    renderCategories(); 
-    renderHomeTrackList();
+    const newCategory = e.currentTarget.dataset.category;
+    activeCategory = newCategory;
+    renderCategories(); 
+    renderHomeTrackList();
 }
 
 
 // Simple Search Filter
 function filterPlaylist(query) {
-    const q = query.toLowerCase();
-    return playlist.filter(song => 
-        song.title.toLowerCase().includes(q) || 
-        song.artist.toLowerCase().includes(q) ||
-        song.categories.some(cat => cat.toLowerCase().includes(q))
-    );
+    const q = query.toLowerCase();
+    return playlist.filter(song => 
+        song.title.toLowerCase().includes(q) || 
+        song.artist.toLowerCase().includes(q) ||
+        song.categories.some(cat => cat.toLowerCase().includes(q))
+    );
 }
 
 // Handle search input
 searchInput.addEventListener('input', (e) => {
-    const query = e.target.value.trim();
-    const results = filterPlaylist(query);
-    
-    if (query.length > 0 && results.length > 0) {
-        searchResultsList.innerHTML = results.map((song, index) => {
-            const originalIndex = playlist.findIndex(p => p.title === song.title && p.artist === song.artist);
-            return createTrackItem(song, originalIndex);
-        }).join('');
-        
-        document.querySelectorAll('#search-results-list .track-item').forEach(item => {
-            item.addEventListener('click', handleTrackClick);
-        });
+    const query = e.target.value.trim();
+    const results = filterPlaylist(query);
+    
+    if (query.length > 0 && results.length > 0) {
+        searchResultsList.innerHTML = results.map((song, index) => {
+            const originalIndex = playlist.findIndex(p => p.title === song.title && p.artist === song.artist);
+            return createTrackItem(song, originalIndex);
+        }).join('');
+        
+        document.querySelectorAll('#search-results-list .track-item').forEach(item => {
+            item.addEventListener('click', handleTrackClick);
+        });
 
-    } else if (query.length > 0) {
-        searchResultsList.innerHTML = `<p style="color: var(--text-medium); padding: 10px;">No results found for "${query}"</p>`;
-    } else {
-        searchResultsList.innerHTML = '';
-    }
+    } else if (query.length > 0) {
+        searchResultsList.innerHTML = `<p style="color: var(--text-medium); padding: 10px;">No results found for "${query}"</p>`;
+    } else {
+        searchResultsList.innerHTML = '';
+    }
 });
 
 /** Populates the library screen. (Simulated) */
 function renderLibrary() {
-    // For MVP, the library is the entire playlist
-    librarySongsList.innerHTML = playlist.map((song, index) => {
-        return createTrackItem(song, index);
-    }).join('');
+    // For MVP, the library is the entire playlist
+    librarySongsList.innerHTML = playlist.map((song, index) => {
+        return createTrackItem(song, index);
+    }).join('');
 
-    document.querySelectorAll('#library-songs-list .track-item').forEach(item => {
-        item.addEventListener('click', handleTrackClick);
-    });
+    document.querySelectorAll('#library-songs-list .track-item').forEach(item => {
+        item.addEventListener('click', handleTrackClick);
+    });
 }
 
 
 // --- 7. Final Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
-    checkAuth();
-    
-    // Set initial volume
-    volumeSlider.addEventListener('input', (e) => { audio.volume = e.target.value / 100; });
-    audio.volume = volumeSlider.value / 100;
+    // 1. Initialize the app directly
+    initializeApp();
+    
+    // 2. Set initial volume
+    volumeSlider.addEventListener('input', (e) => { audio.volume = e.target.value / 100; });
+    audio.volume = volumeSlider.value / 100;
 
-    // Player Listeners
-    playPauseBtn.addEventListener('click', () => { if (isPlaying) pauseSong(); else playSong(); });
-    nextBtn.addEventListener('click', nextSong);
-    prevBtn.addEventListener('click', prevSong);
-    shuffleBtn.addEventListener('click', () => {
-        isShuffling = !isShuffling;
-        shuffleBtn.style.color = isShuffling ? 'var(--accent-color)' : 'var(--text-medium)';
-    });
-    repeatBtn.addEventListener('click', () => {
-        if (repeatMode === 'none') repeatMode = 'all';
-        else if (repeatMode === 'all') repeatMode = 'one';
-        else repeatMode = 'none';
-        repeatBtn.style.color = repeatMode !== 'none' ? 'var(--accent-color)' : 'var(--text-medium)';
-    });
+    // 3. Player Listeners
+    playPauseBtn.addEventListener('click', () => { if (isPlaying) pauseSong(); else playSong(); });
+    nextBtn.addEventListener('click', nextSong);
+    prevBtn.addEventListener('click', prevSong);
+    shuffleBtn.addEventListener('click', () => {
+        isShuffling = !isShuffling;
+        shuffleBtn.style.color = isShuffling ? 'var(--accent-color)' : 'var(--text-medium)';
+    });
+    repeatBtn.addEventListener('click', () => {
+        if (repeatMode === 'none') repeatMode = 'all';
+        else if (repeatMode === 'all') repeatMode = 'one';
+        else repeatMode = 'none';
+        repeatBtn.style.color = repeatMode !== 'none' ? 'var(--accent-color)' : 'var(--text-medium)';
+    });
 
-    audio.addEventListener('timeupdate', () => {
-        progressBar.value = audio.currentTime;
-        currentTimeDisplay.textContent = formatTime(audio.currentTime);
-    });
-    progressBar.addEventListener('input', () => { audio.currentTime = progressBar.value; });
-    
-    audio.addEventListener('ended', () => {
-        if (repeatMode === 'one') { audio.currentTime = 0; playSong(); } 
-        else { nextSong(); }
-    });
-    
-    // Set initial theme icon
-    toggleTheme();
+    audio.addEventListener('timeupdate', () => {
+        progressBar.value = audio.currentTime;
+        currentTimeDisplay.textContent = formatTime(audio.currentTime);
+    });
+    progressBar.addEventListener('input', () => { audio.currentTime = progressBar.value; });
+    
+    audio.addEventListener('ended', () => {
+        if (repeatMode === 'one') { audio.currentTime = 0; playSong(); } 
+        else { nextSong(); }
+    });
+    
+    // 4. Set initial theme icon
+    toggleTheme();
 });
