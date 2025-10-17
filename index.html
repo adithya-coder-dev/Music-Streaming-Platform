@@ -9,103 +9,132 @@
 </head>
 <body class="dark-mode">
 
-    <div id="app-container"> 
+    <div id="login-screen" class="auth-screen" style="display: none;">
+        <div class="login-box">
+            <h1 class="logo">StreamWave Login</h1>
+            <p class="error-message" id="login-error" style="display: none;"></p>
+            <form id="login-form">
+                <input type="email" id="login-email" placeholder="Email (user@example.com)" required>
+                <input type="password" id="login-password" placeholder="Password (password)" required>
+                <button type="submit">Log In</button>
+            </form>
+        </div>
+    </div>
+    
+    <div id="app-container" style="display: none;">
         <div class="main-container">
-            <aside class="sidebar">
+            <aside class="sidebar" role="navigation">
                 <h1 class="logo">StreamWave</h1>
                 <nav>
                     <ul>
-                        <li id="nav-home" class="active"><i class="fas fa-home"></i> Home</li>
-                        <li id="nav-search"><i class="fas fa-search"></i> Search</li>
-                        <li id="nav-library"><i class="fas fa-compact-disc"></i> Library</li>
-                        <li><i class="fas fa-list-ul"></i> Playlists</li>
+                        <li id="nav-home" class="active" tabindex="0"><i class="fas fa-home"></i> Home</li>
+                        <li id="nav-search" tabindex="0"><i class="fas fa-search"></i> Search</li>
+                        <li id="nav-library" tabindex="0"><i class="fas fa-heart"></i> Library</li>
+                        <li tabindex="0"><i class="fas fa-list-ul"></i> Playlists</li>
                     </ul>
                 </nav>
                 <div class="settings">
-                    <button id="theme-toggle-btn">
-                        <i class="fas fa-moon"></i>
-                    </button>
+                    <button id="theme-toggle-btn" aria-label="Toggle Dark/Light Theme">
+                        <i class="fas fa-sun"></i> </button>
                 </div>
                 <div class="user-profile">
-                    <span id="display-username"><i class="fas fa-user-circle"></i> Guest Mode</span>
-                    </div>
+                    <span id="display-username" aria-live="polite"><i class="fas fa-user-circle"></i> Guest Mode</span>
+                    <button id="logout-btn" class="logout-btn">Logout</button>
+                </div>
             </aside>
 
-            <main class="content">
+            <main class="content" role="main">
                 
                 <div id="content-home">
-                    <h2>Good Evening, <span id="greeting-username">Guest!</span></h2>
+                    <h2><span id="greeting-text">Good Evening</span>, <span id="greeting-username">Guest!</span></h2>
                     
-                    <div id="category-list-container" class="category-selector">
-                    </div>
+                    <div id="category-list-container" class="category-selector" role="tablist">
+                        </div>
                     
-                    <h3>Quick Picks</h3>
+                    <h3>Your Quick Mixes</h3>
                     <div class="quick-picks-grid">
-                        <div class="pick-card"><img src="album1.png" alt="Album Art" class="card-img"><span class="card-title">Top Hits 2024</span></div>
-                        <div class="pick-card"><img src="album2.png" alt="Album Art" class="card-img"><span class="card-title">Relaxing Jazz</span></div>
+                        <div class="pick-card" role="button" tabindex="0" data-playlist-id="mix1">
+                            <img src="album1.png" alt="Album Art for Top Hits 2024" class="card-img">
+                            <span class="card-title">Top Hits 2024</span>
+                            <i class="fas fa-play-circle play-overlay"></i>
+                        </div>
+                        <div class="pick-card" role="button" tabindex="0" data-playlist-id="mix2">
+                            <img src="album2.png" alt="Album Art for Relaxing Jazz" class="card-img">
+                            <span class="card-title">Relaxing Jazz</span>
+                            <i class="fas fa-play-circle play-overlay"></i>
+                        </div>
+                        <div class="pick-card" role="button" tabindex="0" data-playlist-id="mix3">
+                            <img src="album3.png" alt="Album Art for Workout Mix" class="card-img">
+                            <span class="card-title">Workout Mix</span>
+                            <i class="fas fa-play-circle play-overlay"></i>
+                        </div>
                     </div>
 
-                    <h3>Browse by Category</h3>
-                    <div id="home-track-list" class="track-list">
-                    </div>
+                    <h3>Filtered Tracks</h3>
+                    <div id="home-track-list" class="track-list" role="list">
+                        </div>
                 </div>
 
                 <div id="content-search" style="display: none;">
                     <div class="search-container">
-                        <input type="text" id="search-input" placeholder="What do you want to listen to?" />
-                        <button><i class="fas fa-search"></i></button>
+                        <input type="text" id="search-input" placeholder="What do you want to listen to?" aria-label="Search music by title, artist, or genre" />
+                        <button aria-label="Search"><i class="fas fa-search"></i></button>
                     </div>
                     
                     <h3>Browse All</h3>
-                    <div class="genre-grid">
-                        <div class="genre-card pop">Pop</div>
-                        <div class="genre-card rock">Rock</div>
-                        <div class="genre-card jazz">Jazz</div>
-                        <div class="genre-card chill">Chill</div>
-                        <div class="genre-card metal">Metal</div>
-                        <div class="genre-card acoustic">Acoustic</div>
-                    </div>
-                    <div id="search-results-list" class="track-list" style="margin-top: 30px;"></div>
+                    <div id="genre-grid" class="genre-grid">
+                        <div class="genre-card" data-genre="Pop">Pop</div>
+                        <div class="genre-card" data-genre="Rock">Rock</div>
+                        <div class="genre-card" data-genre="Jazz">Jazz</div>
+                        </div>
+                    
+                    <h3>Search Results</h3>
+                    <div id="search-results-list" class="track-list" style="margin-top: 30px;" role="list">
+                        </div>
                 </div>
 
                 <div id="content-library" style="display: none;">
                     <h2>My Library</h2>
-                    <h3>Saved Songs</h3>
-                    <div id="library-songs-list" class="track-list"></div>
+                    <h3>Liked Songs <i class="fas fa-heart"></i></h3>
+                    <div id="library-songs-list" class="track-list" role="list">
+                        </div>
                 </div>
 
             </main>
         </div>
 
-        <div class="now-playing-bar">
+        <div class="now-playing-bar" role="toolbar" aria-label="Now Playing Controls">
             <div class="song-info">
-                <img src="placeholder-album.png" alt="Album Art" id="mini-album-art">
+                <img src="placeholder-album.png" alt="Current Album Art" id="mini-album-art">
                 <div class="text">
-                    <span class="song-title">Song Title</span>
-                    <span class="artist-name">Artist Name</span>
+                    <span class="song-title" aria-live="polite">Nothing Playing</span>
+                    <span class="artist-name">Select a track</span>
                 </div>
             </div>
 
             <div class="player-controls">
-                <audio id="music-audio" src="song1.mp3"></audio>
+                <audio id="music-audio" src="song1.mp3.mpeg" preload="metadata"></audio>
 
                 <div class="control-buttons">
-                    <button id="shuffle-btn"><i class="fas fa-random"></i></button>
-                    <button id="prev-btn"><i class="fas fa-step-backward"></i></button>
-                    <button id="play-pause-btn"><i class="fas fa-play"></i></button>
-                    <button id="next-btn"><i class="fas fa-step-forward"></i></button>
-                    <button id="repeat-btn"><i class="fas fa-redo-alt"></i></button>
+                    <button id="shuffle-btn" aria-label="Toggle Shuffle"><i class="fas fa-random"></i></button>
+                    <button id="prev-btn" aria-label="Previous Track"><i class="fas fa-step-backward"></i></button>
+                    <button id="play-pause-btn" aria-label="Play/Pause"><i class="fas fa-play"></i></button>
+                    <button id="next-btn" aria-label="Next Track"><i class="fas fa-step-forward"></i></button>
+                    <button id="repeat-btn" aria-label="Toggle Repeat Mode"><i class="fas fa-redo-alt"></i></button>
                 </div>
+                
                 <div class="progress-bar-container">
-                    <span id="current-time">0:00</span>
-                    <input type="range" id="progress-bar" value="0" min="0" max="100">
-                    <span id="duration">3:30</span>
+                    <span id="current-time" aria-live="off">0:00</span>
+                    <input type="range" id="progress-bar" value="0" min="0" max="100" aria-label="Track Progress Slider">
+                    <span id="duration">0:00</span>
                 </div>
             </div>
 
             <div class="volume-controls">
-                <i class="fas fa-volume-up"></i>
-                <input type="range" id="volume-slider" min="0" max="100" value="70">
+                <button id="volume-icon-btn" aria-label="Toggle Mute">
+                    <i class="fas fa-volume-up" id="volume-icon"></i>
+                </button>
+                <input type="range" id="volume-slider" min="0" max="100" value="70" aria-label="Volume Slider">
             </div>
         </div>
     </div>
