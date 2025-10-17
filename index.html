@@ -3,404 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StreamWave - Fully Functional Music Player</title>
-    
-    <style>
-        :root {
-            --primary-color: #1DB954; /* Spotify Green */
-            --secondary-color: #282828;
-            --background-color: #121212;
-            --text-color: #FFFFFF;
-            --light-text: #B3B3B3;
-            --hover-color: #3e3e3e;
-            --player-height: 90px;
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        .app-container {
-            display: flex;
-            flex-grow: 1;
-            overflow: hidden;
-            padding-bottom: var(--player-height);
-        }
-
-        /* --- Sidebar --- */
-        .sidebar {
-            width: 250px;
-            background-color: var(--secondary-color);
-            padding: 20px 0;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            flex-shrink: 0;
-        }
-
-        .sidebar a {
-            color: var(--light-text);
-            text-decoration: none;
-            padding: 10px 20px;
-            display: flex;
-            align-items: center;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        .sidebar a:hover, .sidebar a.active {
-            color: var(--text-color);
-            background-color: var(--hover-color);
-        }
-        
-        /* --- Main Content --- */
-        .main-content {
-            flex-grow: 1;
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        .music-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 25px;
-        }
-
-        .card {
-            background-color: var(--secondary-color);
-            padding: 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
-        }
-
-        .card:hover {
-            background-color: var(--hover-color);
-            transform: translateY(-5px);
-        }
-
-        .card img {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            border-radius: 4px;
-            margin-bottom: 10px;
-        }
-
-        .card h4 { margin: 0; font-size: 1em; }
-        .card p { margin: 5px 0 0; font-size: 0.85em; color: var(--light-text); }
-
-        /* --- Player Bar (Footer) --- */
-        .player-bar {
-            height: var(--player-height);
-            background-color: #000000;
-            border-top: 1px solid var(--secondary-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            z-index: 10;
-        }
-
-        .song-info {
-            display: flex;
-            align-items: center;
-            width: 25%;
-        }
-
-        .song-info img {
-            width: 60px;
-            height: 60px;
-            margin-right: 15px;
-            border-radius: 4px;
-        }
-
-        .controls {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 50%;
-        }
-
-        .control-buttons button {
-            background: none;
-            border: none;
-            color: var(--text-color);
-            font-size: 1.5em;
-            cursor: pointer;
-            margin: 0 15px;
-            transition: color 0.2s, transform 0.1s;
-        }
-
-        .control-buttons button:hover {
-            color: var(--primary-color);
-        }
-        
-        #playPauseBtn {
-            font-size: 2em;
-            color: var(--text-color);
-            /* Highlight the main action button */
-            background-color: var(--text-color); 
-            color: var(--background-color);
-            padding: 8px 10px;
-            border-radius: 50%;
-        }
-
-        #playPauseBtn:hover {
-            transform: scale(1.05);
-            background-color: var(--primary-color);
-            color: var(--background-color);
-        }
-
-        /* --- Progress Bar --- */
-        .progress-bar-container {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            margin-top: 5px;
-        }
-
-        #progressBar {
-            flex-grow: 1;
-            height: 4px;
-            background-color: var(--secondary-color);
-            border-radius: 2px;
-            margin: 0 10px;
-            cursor: pointer;
-            position: relative;
-        }
-
-        #progress {
-            width: 0%;
-            height: 100%;
-            background-color: var(--primary-color);
-            border-radius: 2px;
-            position: relative;
-        }
-        
-        #progressHandle {
-            position: absolute;
-            right: 0;
-            top: 50%;
-            transform: translate(50%, -50%);
-            width: 12px;
-            height: 12px;
-            background-color: var(--text-color);
-            border-radius: 50%;
-            display: none; /* Hide until interaction */
-        }
-        
-        #progressBar:hover #progressHandle {
-            display: block;
-            background-color: var(--primary-color);
-        }
-
-        .time {
-            font-size: 0.8em;
-            color: var(--light-text);
-        }
-
-        /* --- Usable Settings (Volume) --- */
-        .volume-control {
-            width: 25%;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-        }
-        
-        #volumeSlider {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 100px;
-            height: 4px;
-            background: var(--secondary-color);
-            border-radius: 2px;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-        
-        #volumeSlider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 12px;
-            height: 12px;
-            background: var(--text-color);
-            border-radius: 50%;
-            transition: background 0.2s;
-        }
-        
-        #volumeSlider:hover::-webkit-slider-thumb {
-            background: var(--primary-color);
-        }
-    </style>
+    <title>StreamWave - Music Player</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body>
+<body class="dark-mode">
 
-    <audio id="audioPlayer" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
-
-    <div class="app-container">
-
-        <aside class="sidebar">
-            <h2 style="padding: 0 20px; color: var(--primary-color);">StreamWave</h2>
-            <a href="#" class="active"><span style="margin-right: 15px;">🏠</span> Home</a>
-            <a href="#"><span style="margin-right: 15px;">🔍</span> Search</a>
-            <a href="#"><span style="margin-right: 15px;">📚</span> Your Library</a>
-            <hr style="margin: 15px 20px; border-color: var(--hover-color);">
-            <h3>Playlists</h3>
-            <a href="#"><span style="margin-right: 15px;">▶️</span> Chillstep Radio</a>
-            <a href="#"><span style="margin-right: 15px;">➕</span> Create Playlist</a>
-        </aside>
-
-        <main class="main-content">
-            <h1>Featured Tracks</h1>
-            
-            <section class="music-grid">
-                <div class="card" onclick="loadTrack('SoundHelix-Song-1.mp3', 'SoundHelix Song 1', 'SoundHelix')">
-                    <img src="placeholder-album1.png" alt="Album Cover">
-                    <h4>SoundHelix Song 1</h4>
-                    <p>The best synthwave tracks for a late night journey.</p>
-                </div>
-                <div class="card" onclick="loadTrack('SoundHelix-Song-1.mp3', 'Focus Flow Tune', 'SoundHelix')">
-                    <img src="placeholder-album2.png" alt="Album Cover">
-                    <h4>Focus Flow Tune</h4>
-                    <p>Instrumental beats for deep work sessions.</p>
-                </div>
-            </section>
-        </main>
+    <div id="login-screen" class="auth-screen">
+        <div class="login-box">
+            <h1 class="logo">StreamWave Login</h1>
+            <p>Use "user@example.com" and "password" to log in.</p>
+            <form id="login-form">
+                <input type="email" id="login-email" placeholder="Email" required>
+                <input type="password" id="login-password" placeholder="Password" required>
+                <button type="submit">Log In</button>
+                <p id="login-error" class="error-message" style="display: none;"></p>
+            </form>
+        </div>
     </div>
-    
-    <footer class="player-bar">
-        
-        <div class="song-info">
-            <img id="trackCover" src="placeholder-song.png" alt="Album Cover">
-            <div>
-                <h4 id="trackTitle">Ready to Play</h4>
-                <p id="trackArtist" style="color: var(--light-text);">Select a track above</p>
-            </div>
-            <button style="background: none; border: none; color: var(--text-color); margin-left: 15px; cursor: pointer;">❤️</button>
-        </div>
 
-        <div class="controls">
-            <div class="control-buttons">
-                <button title="Shuffle">🔁</button>
-                <button title="Previous">⏮️</button>
-                <button id="playPauseBtn" title="Play">▶️</button>
-                <button title="Next">⏭️</button>
-                <button title="Repeat">🔂</button>
-            </div>
-            <div class="progress-bar-container">
-                <span class="time" id="currentTime">0:00</span>
-                <div id="progressBar">
-                    <div id="progress">
-                        <span id="progressHandle"></span>
-                    </div>
+    <div id="app-container" style="display: none;"> 
+        <div class="main-container">
+            <aside class="sidebar">
+                <h1 class="logo">StreamWave</h1>
+                <nav>
+                    <ul>
+                        <li id="nav-home" class="active"><i class="fas fa-home"></i> Home</li>
+                        <li id="nav-search"><i class="fas fa-search"></i> Search</li>
+                        <li id="nav-library"><i class="fas fa-compact-disc"></i> Library</li>
+                        <li><i class="fas fa-list-ul"></i> Playlists</li>
+                    </ul>
+                </nav>
+                <div class="settings">
+                    <button id="theme-toggle-btn">
+                        <i class="fas fa-moon"></i>
+                    </button>
                 </div>
-                <span class="time" id="durationTime">0:00</span>
+                <div class="user-profile">
+                    <span id="display-username"><i class="fas fa-user-circle"></i> User Name</span>
+                    <button id="logout-btn" class="logout-btn">Logout</button>
+                </div>
+            </aside>
+
+            <main class="content">
+                
+                <div id="content-home">
+                    <h2>Good Evening, <span id="greeting-username">User!</span></h2>
+                    
+                    <div id="category-list-container" class="category-selector">
+                        </div>
+                    
+                    <h3>Quick Picks</h3>
+                    <div class="quick-picks-grid">
+                        <div class="pick-card"><img src="album1.png" alt="Album Art" class="card-img"><span class="card-title">Top Hits 2024</span></div>
+                        <div class="pick-card"><img src="album2.png" alt="Album Art" class="card-img"><span class="card-title">Relaxing Jazz</span></div>
+                    </div>
+
+                    <h3>Browse by Category</h3>
+                    <div id="home-track-list" class="track-list">
+                        </div>
+                </div>
+
+                <div id="content-search" style="display: none;">
+                    <div class="search-container">
+                        <input type="text" id="search-input" placeholder="What do you want to listen to?" />
+                        <button><i class="fas fa-search"></i></button>
+                    </div>
+                    
+                    <h3>Browse All</h3>
+                    <div class="genre-grid">
+                        <div class="genre-card pop">Pop</div>
+                        <div class="genre-card rock">Rock</div>
+                        <div class="genre-card jazz">Jazz</div>
+                        <div class="genre-card chill">Chill</div>
+                        <div class="genre-card metal">Metal</div>
+                        <div class="genre-card acoustic">Acoustic</div>
+                    </div>
+                    <div id="search-results-list" class="track-list" style="margin-top: 30px;"></div>
+                </div>
+
+                <div id="content-library" style="display: none;">
+                    <h2>My Library</h2>
+                    <h3>Saved Songs</h3>
+                    <div id="library-songs-list" class="track-list"></div>
+                </div>
+
+            </main>
+        </div>
+
+        <div class="now-playing-bar">
+            <div class="song-info">
+                <img src="placeholder-album.png" alt="Album Art" id="mini-album-art">
+                <div class="text">
+                    <span class="song-title">Song Title</span>
+                    <span class="artist-name">Artist Name</span>
+                </div>
+            </div>
+
+            <div class="player-controls">
+                <audio id="music-audio" src="song1.mp3"></audio>
+
+                <div class="control-buttons">
+                    <button id="shuffle-btn"><i class="fas fa-random"></i></button>
+                    <button id="prev-btn"><i class="fas fa-step-backward"></i></button>
+                    <button id="play-pause-btn"><i class="fas fa-play"></i></button>
+                    <button id="next-btn"><i class="fas fa-step-forward"></i></button>
+                    <button id="repeat-btn"><i class="fas fa-redo-alt"></i></button>
+                </div>
+                <div class="progress-bar-container">
+                    <span id="current-time">0:00</span>
+                    <input type="range" id="progress-bar" value="0" min="0" max="100">
+                    <span id="duration">3:30</span>
+                </div>
+            </div>
+
+            <div class="volume-controls">
+                <i class="fas fa-volume-up"></i>
+                <input type="range" id="volume-slider" min="0" max="100" value="70">
             </div>
         </div>
+    </div>
 
-        <div class="volume-control">
-            <span id="volumeIcon">🔊</span>
-            <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.7">
-            <button style="background: none; border: none; color: var(--text-color); margin-left: 15px; cursor: pointer;">📖</button>
-        </div>
-
-    </footer>
-
-    <script>
-        const audio = document.getElementById('audioPlayer');
-        const playPauseBtn = document.getElementById('playPauseBtn');
-        const progress = document.getElementById('progress');
-        const progressBar = document.getElementById('progressBar');
-        const currentTimeEl = document.getElementById('currentTime');
-        const durationTimeEl = document.getElementById('durationTime');
-        const volumeSlider = document.getElementById('volumeSlider');
-        const volumeIcon = document.getElementById('volumeIcon');
-        const trackTitleEl = document.getElementById('trackTitle');
-        const trackArtistEl = document.getElementById('trackArtist');
-
-        // --- 1. Core Playback Controls (Usable Feature) ---
-        playPauseBtn.addEventListener('click', () => {
-            if (audio.paused || audio.ended) {
-                audio.play();
-            } else {
-                audio.pause();
-            }
-        });
-
-        audio.addEventListener('play', () => {
-            playPauseBtn.innerHTML = '⏸️';
-            playPauseBtn.title = 'Pause';
-        });
-
-        audio.addEventListener('pause', () => {
-            playPauseBtn.innerHTML = '▶️';
-            playPauseBtn.title = 'Play';
-        });
-        
-        // --- 2. Track Loading (Usable Feature) ---
-        function loadTrack(filename, title, artist) {
-            // In a real app, this would change the entire track URL
-            // Since we use one demo URL, we just update the info
-            trackTitleEl.textContent = title;
-            trackArtistEl.textContent = artist;
-            audio.load(); // Reloads the audio element (important if we were changing sources)
-            audio.play();
-        }
-
-        // --- 3. Progress Bar & Time Updates (Usable Feature) ---
-        audio.addEventListener('loadedmetadata', () => {
-            // Sets the total duration once the track info is loaded
-            durationTimeEl.textContent = formatTime(audio.duration);
-        });
-
-        audio.addEventListener('timeupdate', () => {
-            const progressPercent = (audio.currentTime / audio.duration) * 100;
-            progress.style.width = `${progressPercent}%`;
-            currentTimeEl.textContent = formatTime(audio.currentTime);
-        });
-
-        function formatTime(seconds) {
-            const minutes = Math.floor(seconds / 60);
-            const remainingSeconds = Math.floor(seconds % 60);
-            return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
-        }
-
-        // --- 4. Seek Functionality (Usable Feature) ---
-        progressBar.addEventListener('click', (e) => {
-            const clickX = e.offsetX; // X position of the click relative to the progress bar
-            const width = progressBar.offsetWidth;
-            const seekTime = (clickX / width) * audio.duration;
-            audio.currentTime = seekTime;
-        });
-
-        // --- 5. Volume Control (Usable Setting) ---
-        volumeSlider.addEventListener('input', (e) => {
-            const volume = e.target.value;
-            audio.volume = volume;
-            
-            // Update the visual icon based on volume level
-            if (volume == 0) {
-                volumeIcon.textContent = '🔇';
-            } else if (volume < 0.5) {
-                volumeIcon.textContent = '🔉';
-            } else {
-                volumeIcon.textContent = '🔊';
-            }
-        });
-        
-        // Initialize volume
-        audio.volume = volumeSlider.value;
-    </script>
-
+    <script src="script.js"></script>
 </body>
 </html>
