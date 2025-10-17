@@ -102,5 +102,5 @@ Make sure to also update the `allCategories` array if you introduce new categori
 
 
 ## Demo:
-    https://adithya-coder-dev.github.io/Music-Streaming-Platform/
+    [live](https://adithya-coder-dev.github.io/Music-Streaming-Platform/)
 
