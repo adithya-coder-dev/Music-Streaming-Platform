@@ -3,259 +3,309 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Music Streaming Interface Project Documentation</title>
+    <title>StreamWave - Music Streaming Interface</title>
     <style>
+        :root {
+            --primary-color: #1DB954; /* Spotify Green */
+            --secondary-color: #282828; /* Dark Grey background for side/main */
+            --background-color: #121212; /* Deep Black background */
+            --text-color: #FFFFFF;
+            --light-text: #B3B3B3;
+            --hover-color: #3e3e3e;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            line-height: 1.6;
-            color: #333;
+            font-family: 'Arial', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden; /* Prevent scroll on the main body */
         }
-        h1, h2, h3 {
-            color: #2c3e50;
+
+        /* --- Main Layout Container --- */
+        .app-container {
+            display: flex;
+            flex-grow: 1; /* Takes all available vertical space above the player */
+            overflow: hidden;
         }
-        h1 { border-bottom: 2px solid #2c3e50; padding-bottom: 5px; }
-        table {
-            border-collapse: collapse;
+
+        /* --- Sidebar Navigation --- */
+        .sidebar {
+            width: 250px;
+            background-color: var(--secondary-color);
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto; /* Allows scrolling if content is long */
+        }
+
+        .sidebar a {
+            color: var(--light-text);
+            text-decoration: none;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar a:hover, .sidebar a.active {
+            color: var(--text-color);
+            background-color: var(--hover-color);
+        }
+
+        .sidebar h3 {
+            padding: 0 20px;
+            color: var(--text-color);
+            margin-top: 15px;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        /* --- Main Content Area --- */
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto; /* Allows scrolling for the main content */
+        }
+
+        /* --- Album/Playlist Card Styling (for a smooth look) --- */
+        .music-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background-color: var(--secondary-color);
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .card:hover {
+            background-color: var(--hover-color);
+            transform: translateY(-5px);
+        }
+
+        .card img {
             width: 100%;
-            margin-bottom: 20px;
+            border-radius: 4px;
+            margin-bottom: 10px;
         }
-        table, th, td {
-            border: 1px solid #999;
+
+        .card h4 { margin: 0; font-size: 1em; }
+        .card p { margin: 5px 0 0; font-size: 0.85em; color: var(--light-text); }
+
+
+        /* --- Music Player Bar (Footer) --- */
+        .player-bar {
+            height: 90px;
+            background-color: #000000; /* Pure black for the bar */
+            border-top: 1px solid var(--secondary-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
         }
-        th, td {
-            padding: 8px;
-            text-align: left;
+
+        .song-info {
+            display: flex;
+            align-items: center;
         }
-        pre {
-            background-color: #f4f4f4;
-            padding: 10px;
-            overflow-x: auto;
+
+        .song-info img {
+            width: 60px;
+            height: 60px;
+            margin-right: 15px;
+            border-radius: 4px;
         }
-        code {
-            font-family: monospace;
-            background-color: #f4f4f4;
-            padding: 2px 4px;
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 40%;
         }
+
+        .control-buttons button {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5em;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: color 0.2s;
+        }
+
+        .control-buttons button:hover {
+            color: var(--primary-color);
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            margin-top: 5px;
+        }
+
+        .progress-bar {
+            flex-grow: 1;
+            height: 4px;
+            background-color: var(--secondary-color);
+            border-radius: 2px;
+            margin: 0 10px;
+            cursor: pointer;
+        }
+
+        .progress {
+            width: 30%; /* Placeholder for current progress */
+            height: 100%;
+            background-color: var(--primary-color);
+            border-radius: 2px;
+        }
+
+        .time {
+            font-size: 0.8em;
+            color: var(--light-text);
+        }
+
+        .volume-control {
+            width: 150px;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Basic Icons (replace with proper icon library like FontAwesome in a real project) */
+        .icon {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
     </style>
 </head>
 <body>
 
-    <h1>Music Streaming Interface Project Documentation</h1>
+    <div class="app-container">
 
-    <h2>1. Project Overview & Objectives</h2>
-    <h3>Problem Statement</h3>
-    <p>
-        Users often face slow, ad-heavy, or complex interfaces when streaming music online. 
-        This project aims to build a lightweight, responsive, and ad-free music streaming interface 
-        that focuses on usability, speed, and personalized playlists.
-    </p>
+        <aside class="sidebar">
+            <h2 style="padding: 0 20px; color: var(--primary-color); margin-bottom: 30px;">StreamWave</h2>
+            
+            <a href="#" class="active"><span class="icon">🏠</span> Home</a>
+            <a href="#"><span class="icon">🔍</span> Search</a>
+            <a href="#"><span class="icon">📚</span> Your Library</a>
 
-    <h3>Objectives</h3>
-    <ul>
-        <li>Provide seamless access to an online music catalog.</li>
-        <li>Enable users to search, play, and manage playlists easily.</li>
-        <li>Design a clean and intuitive UI/UX with smooth transitions and audio controls.</li>
-        <li>Allow admins to manage songs and metadata efficiently.</li>
-    </ul>
+            <hr style="margin: 15px 20px; border-color: var(--hover-color);">
 
-    <h3>Key Features</h3>
-    <ul>
-        <li>User authentication (Register/Login)</li>
-        <li>Browse and search songs by name, artist, or genre</li>
-        <li>Integrated audio player (Play, Pause, Skip)</li>
-        <li>Playlist creation and management</li>
-        <li>Admin dashboard to manage songs</li>
-        <li>Responsive and mobile-friendly UI</li>
-    </ul>
+            <h3>Playlists</h3>
+            <a href="#"><span class="icon">▶️</span> Daily Mix</a>
+            <a href="#"><span class="icon">🎧</span> Workout Jams</a>
+            <a href="#"><span class="icon">☕</span> Chill Vibes</a>
+            <a href="#"><span class="icon">➕</span> Create Playlist</a>
 
-    <h3>Expected Outcome</h3>
-    <p>
-        A functional web app prototype where users can play and organize songs seamlessly, 
-        admins can maintain the music catalog, and the interface works efficiently on both desktop and mobile.
-    </p>
+        </aside>
 
-    <h2>2. Technology Stack & Environment Setup</h2>
+        <main class="main-content">
+            
+            <h1>Good Afternoon!</h1>
+            
+            <section>
+                <h2>Quick Picks</h2>
+                <div class="music-grid" style="grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));">
+                    <div class="card" style="display: flex; align-items: center; padding: 10px;">
+                        <img src="placeholder-album.png" alt="Recent Album" style="width: 50px; height: 50px; margin: 0; border-radius: 50%;">
+                        <h4 style="margin-left: 15px;">Top Global Hits</h4>
+                    </div>
+                    </div>
+            </section>
 
-    <h3>Frontend</h3>
-    <ul>
-        <li>Framework: React.js (Vite setup for fast builds)</li>
-        <li>Styling: Tailwind CSS for responsive design</li>
-        <li>State Management: Context API or Redux Toolkit</li>
-        <li>Audio Playback: HTML5 Audio API</li>
-    </ul>
+            <hr style="border-color: var(--secondary-color); margin: 30px 0;">
 
-    <h3>Backend</h3>
-    <ul>
-        <li>Runtime: Node.js</li>
-        <li>Framework: Express.js</li>
-        <li>Middleware: CORS, JSON parser, JWT authentication</li>
-        <li>File Handling: Multer (for audio uploads, optional)</li>
-    </ul>
+            <section>
+                <h2>Made For You</h2>
+                <div class="music-grid">
+                    <div class="card">
+                        <img src="placeholder-playlist1.png" alt="Playlist Cover">
+                        <h4>Indie Mix</h4>
+                        <p>Your weekly discovery of new independent music.</p>
+                    </div>
+                    <div class="card">
+                        <img src="placeholder-playlist2.png" alt="Playlist Cover">
+                        <h4>Road Trip Rock</h4>
+                        <p>Anthems for the open highway.</p>
+                    </div>
+                    <div class="card">
+                        <img src="placeholder-playlist3.png" alt="Playlist Cover">
+                        <h4>Focus Flow</h4>
+                        <p>Instrumental beats for deep work sessions.</p>
+                    </div>
+                    <div class="card">
+                        <img src="placeholder-playlist4.png" alt="Playlist Cover">
+                        <h4>90s Rewind</h4>
+                        <p>The best pop and rock from a nostalgic decade.</p>
+                    </div>
+                    </div>
+            </section>
 
-    <h3>Database</h3>
-    <ul>
-        <li>MongoDB (hosted on MongoDB Atlas)</li>
-        <li>ODM: Mongoose</li>
-    </ul>
+        </main>
 
-    <h3>Development Tools</h3>
-    <ul>
-        <li>VS Code – Code editor</li>
-        <li>Postman – API testing</li>
-        <li>GitHub – Version control & repo management</li>
-        <li>Render / Vercel – Hosting</li>
-        <li>Nodemon – Hot reload during backend dev</li>
-    </ul>
+    </div>
+    
+    <footer class="player-bar">
+        
+        <div class="song-info">
+            <img src="placeholder-song.png" alt="Album Cover">
+            <div>
+                <h4>Song Title Name</h4>
+                <p style="color: var(--light-text);">Artist Name</p>
+            </div>
+            <button style="background: none; border: none; color: var(--text-color); margin-left: 15px; cursor: pointer;">❤️</button>
+        </div>
 
-    <h3>Environment Setup</h3>
-    <pre><code>
-npm init -y
-npm install express mongoose cors dotenv jsonwebtoken bcrypt
-npm install nodemon --save-dev
+        <div class="controls">
+            <div class="control-buttons">
+                <button title="Shuffle">🔁</button>
+                <button title="Previous">⏮️</button>
+                <button title="Play/Pause">▶️</button> <button title="Next">⏭️</button>
+                <button title="Repeat">🔂</button>
+            </div>
+            <div class="progress-bar-container">
+                <span class="time current-time">0:45</span>
+                <div class="progress-bar">
+                    <div class="progress"></div>
+                </div>
+                <span class="time total-time">3:20</span>
+            </div>
+        </div>
 
-# .env
-PORT=5000
-MONGO_URI=your_mongodb_connection
-JWT_SECRET=your_secret_key
+        <div class="volume-control">
+            <span class="icon">🔊</span>
+            <input type="range" min="0" max="100" value="70" style="width: 100px; cursor: pointer;">
+            <button style="background: none; border: none; color: var(--text-color); margin-left: 15px; cursor: pointer;">🎶</button> </div>
 
-npm run dev
-    </code></pre>
+    </footer>
 
-    <h2>3. API Design & Data Model</h2>
+    <script>
+        // Placeholder for JavaScript functionality
+        // Example: Toggling the play button text/icon
+        document.querySelector('.control-buttons button:nth-child(3)').addEventListener('click', function() {
+            if (this.textContent === '▶️') {
+                this.textContent = '⏸️';
+                this.title = 'Pause';
+                console.log('Music playing...');
+            } else {
+                this.textContent = '▶️';
+                this.title = 'Play';
+                console.log('Music paused.');
+            }
+        });
 
-    <h3>Planned REST Endpoints</h3>
-    <table>
-        <tr>
-            <th>Method</th><th>Endpoint</th><th>Description</th><th>Access</th>
-        </tr>
-        <tr><td>POST</td><td>/api/auth/register</td><td>Register a new user</td><td>Public</td></tr>
-        <tr><td>POST</td><td>/api/auth/login</td><td>User login and token generation</td><td>Public</td></tr>
-        <tr><td>GET</td><td>/api/songs</td><td>Fetch all songs</td><td>User</td></tr>
-        <tr><td>GET</td><td>/api/songs/:id</td><td>Get specific song details</td><td>User</td></tr>
-        <tr><td>POST</td><td>/api/playlists</td><td>Create a new playlist</td><td>User</td></tr>
-        <tr><td>GET</td><td>/api/playlists/:userId</td><td>Get all playlists of a user</td><td>User</td></tr>
-        <tr><td>DELETE</td><td>/api/playlists/:id</td><td>Delete playlist</td><td>User</td></tr>
-        <tr><td>POST</td><td>/api/admin/song</td><td>Add new song</td><td>Admin</td></tr>
-        <tr><td>PUT</td><td>/api/admin/song/:id</td><td>Edit song info</td><td>Admin</td></tr>
-        <tr><td>DELETE</td><td>/api/admin/song/:id</td><td>Delete song</td><td>Admin</td></tr>
-    </table>
-
-    <h3>Sample Request / Response</h3>
-    <pre><code>
-// POST /api/auth/login - Request
-{
-  "email": "user@example.com",
-  "password": "123456"
-}
-
-// Response
-{
-  "status": "success",
-  "token": "jwt_token_here",
-  "user": {
-    "id": "u001",
-    "username": "musiclover"
-  }
-}
-    </code></pre>
-
-    <h3>Database Schema</h3>
-    <pre><code>
-// User Schema
-{
-  username: String,
-  email: String,
-  password: String,
-  playlists: [{ type: mongoose.Schema.Types.ObjectId, ref: "Playlist" }]
-}
-
-// Song Schema
-{
-  title: String,
-  artist: String,
-  genre: String,
-  url: String,
-  coverImage: String
-}
-
-// Playlist Schema
-{
-  name: String,
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  songs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Song" }]
-}
-    </code></pre>
-
-    <h2>4. Front-End UI/UX Plan</h2>
-
-    <h3>Wireframes & Pages</h3>
-    <ul>
-        <li>Login / Register: Authentication screen</li>
-        <li>Home Page: Trending songs & search bar</li>
-        <li>Song List: Shows results with play buttons</li>
-        <li>Player Bar: Sticky bottom bar for Play/Pause/Skip</li>
-        <li>Playlist Page: View, create, and edit playlists</li>
-        <li>Admin Dashboard: Manage songs and uploads</li>
-    </ul>
-
-    <h3>Navigation Flow</h3>
-    <pre><code>
-Login → Home → Song List → Player → Playlist → Logout
-                 ↳ Admin → Add/Edit/Delete Songs
-    </code></pre>
-
-    <h3>State Management Approach</h3>
-    <ul>
-        <li>Global State: Context API (Auth, Playlist, Player state)</li>
-        <li>Local State: useState for forms and UI toggles</li>
-        <li>API Calls: Axios hooks</li>
-        <li>Persistent Data: JWT stored in localStorage</li>
-    </ul>
-
-    <h2>5. Development & Deployment Plan</h2>
-
-    <h3>Team Roles</h3>
-    <table>
-        <tr><th>Role</th><th>Responsibility</th></tr>
-        <tr><td>Frontend Developer</td><td>React UI, Player logic, State management</td></tr>
-        <tr><td>Backend Developer</td><td>API routes, database models, JWT auth</td></tr>
-        <tr><td>UI/UX Designer</td><td>Wireframes, page layouts, responsive design</td></tr>
-        <tr><td>QA Tester</td><td>Testing, bug reporting, validation</td></tr>
-        <tr><td>Project Manager</td><td>Task allocation, Git merges, deployment</td></tr>
-    </table>
-
-    <h3>Git Workflow</h3>
-    <ul>
-        <li>main – stable release</li>
-        <li>dev – staging branch</li>
-        <li>feature/&lt;module&gt; – feature branches</li>
-        <li>Pull requests reviewed before merging into main</li>
-    </ul>
-
-    <h3>Testing Approach</h3>
-    <ul>
-        <li>Backend Tests: API validation using Postman</li>
-        <li>Frontend Tests: Manual UI validation, input error checks</li>
-        <li>Integration: Verify end-to-end flows (login → play → playlist)</li>
-        <li>Acceptance: Check features against acceptance criteria</li>
-    </ul>
-
-    <h3>Hosting / Deployment Strategy</h3>
-    <table>
-        <tr><th>Component</th><th>Platform</th></tr>
-        <tr><td>Frontend</td><td>Vercel / Netlify</td></tr>
-        <tr><td>Backend</td><td>Render / Railway</td></tr>
-        <tr><td>Database</td><td>MongoDB Atlas</td></tr>
-        <tr><td>Domain</td><td>Free subdomain via Vercel or custom domain</td></tr>
-    </table>
-    <p>Deployment Steps:</p>
-    <ol>
-        <li>Push code to GitHub main branch</li>
-        <li>Auto-deploy backend from Render and frontend from Vercel</li>
-        <li>Set environment variables online (MONGO_URI, JWT_SECRET)</li>
-        <li>Test deployed endpoints and frontend functionality</li>
-    </ol>
+        // Add more JS for sidebar navigation, search, volume control, etc.
+    </script>
 
 </body>
 </html>
