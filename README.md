@@ -96,3 +96,8 @@ const playlist = [
   * **CSS3**
   * **JavaScript (ES6+)**
   * **Font Awesome** (for icons)
+
+## 🤝 Contributors
+* Adithya.M
+* Mari muthu.K
+* Abiahek raj.R
