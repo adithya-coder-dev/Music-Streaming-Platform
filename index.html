@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StreamWave - Music Streaming Interface</title>
+    <title>StreamWave - Fully Functional Music Player</title>
+    
     <style>
         :root {
             --primary-color: #1DB954; /* Spotify Green */
-            --secondary-color: #282828; /* Dark Grey background for side/main */
-            --background-color: #121212; /* Deep Black background */
+            --secondary-color: #282828;
+            --background-color: #121212;
             --text-color: #FFFFFF;
             --light-text: #B3B3B3;
             --hover-color: #3e3e3e;
+            --player-height: 90px;
         }
 
         body {
@@ -23,24 +25,25 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
-            overflow: hidden; /* Prevent scroll on the main body */
-        }
-
-        /* --- Main Layout Container --- */
-        .app-container {
-            display: flex;
-            flex-grow: 1; /* Takes all available vertical space above the player */
             overflow: hidden;
         }
 
-        /* --- Sidebar Navigation --- */
+        .app-container {
+            display: flex;
+            flex-grow: 1;
+            overflow: hidden;
+            padding-bottom: var(--player-height);
+        }
+
+        /* --- Sidebar --- */
         .sidebar {
             width: 250px;
             background-color: var(--secondary-color);
             padding: 20px 0;
             display: flex;
             flex-direction: column;
-            overflow-y: auto; /* Allows scrolling if content is long */
+            overflow-y: auto;
+            flex-shrink: 0;
         }
 
         .sidebar a {
@@ -49,34 +52,25 @@
             padding: 10px 20px;
             display: flex;
             align-items: center;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         .sidebar a:hover, .sidebar a.active {
             color: var(--text-color);
             background-color: var(--hover-color);
         }
-
-        .sidebar h3 {
-            padding: 0 20px;
-            color: var(--text-color);
-            margin-top: 15px;
-            margin-bottom: 10px;
-            font-size: 1.1em;
-        }
-
-        /* --- Main Content Area --- */
+        
+        /* --- Main Content --- */
         .main-content {
             flex-grow: 1;
             padding: 20px;
-            overflow-y: auto; /* Allows scrolling for the main content */
+            overflow-y: auto;
         }
 
-        /* --- Album/Playlist Card Styling (for a smooth look) --- */
         .music-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 20px;
+            gap: 25px;
         }
 
         .card {
@@ -94,6 +88,7 @@
 
         .card img {
             width: 100%;
+            aspect-ratio: 1 / 1;
             border-radius: 4px;
             margin-bottom: 10px;
         }
@@ -101,21 +96,25 @@
         .card h4 { margin: 0; font-size: 1em; }
         .card p { margin: 5px 0 0; font-size: 0.85em; color: var(--light-text); }
 
-
-        /* --- Music Player Bar (Footer) --- */
+        /* --- Player Bar (Footer) --- */
         .player-bar {
-            height: 90px;
-            background-color: #000000; /* Pure black for the bar */
+            height: var(--player-height);
+            background-color: #000000;
             border-top: 1px solid var(--secondary-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 0 20px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            z-index: 10;
         }
 
         .song-info {
             display: flex;
             align-items: center;
+            width: 25%;
         }
 
         .song-info img {
@@ -129,7 +128,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 40%;
+            width: 50%;
         }
 
         .control-buttons button {
@@ -138,14 +137,31 @@
             color: var(--text-color);
             font-size: 1.5em;
             cursor: pointer;
-            margin: 0 10px;
-            transition: color 0.2s;
+            margin: 0 15px;
+            transition: color 0.2s, transform 0.1s;
         }
 
         .control-buttons button:hover {
             color: var(--primary-color);
         }
+        
+        #playPauseBtn {
+            font-size: 2em;
+            color: var(--text-color);
+            /* Highlight the main action button */
+            background-color: var(--text-color); 
+            color: var(--background-color);
+            padding: 8px 10px;
+            border-radius: 50%;
+        }
 
+        #playPauseBtn:hover {
+            transform: scale(1.05);
+            background-color: var(--primary-color);
+            color: var(--background-color);
+        }
+
+        /* --- Progress Bar --- */
         .progress-bar-container {
             width: 100%;
             display: flex;
@@ -153,20 +169,39 @@
             margin-top: 5px;
         }
 
-        .progress-bar {
+        #progressBar {
             flex-grow: 1;
             height: 4px;
             background-color: var(--secondary-color);
             border-radius: 2px;
             margin: 0 10px;
             cursor: pointer;
+            position: relative;
         }
 
-        .progress {
-            width: 30%; /* Placeholder for current progress */
+        #progress {
+            width: 0%;
             height: 100%;
             background-color: var(--primary-color);
             border-radius: 2px;
+            position: relative;
+        }
+        
+        #progressHandle {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translate(50%, -50%);
+            width: 12px;
+            height: 12px;
+            background-color: var(--text-color);
+            border-radius: 50%;
+            display: none; /* Hide until interaction */
+        }
+        
+        #progressBar:hover #progressHandle {
+            display: block;
+            background-color: var(--primary-color);
         }
 
         .time {
@@ -174,94 +209,82 @@
             color: var(--light-text);
         }
 
+        /* --- Usable Settings (Volume) --- */
         .volume-control {
-            width: 150px;
+            width: 25%;
             display: flex;
             align-items: center;
+            justify-content: flex-end;
         }
-
-        /* Basic Icons (replace with proper icon library like FontAwesome in a real project) */
-        .icon {
-            margin-right: 10px;
-            font-size: 1.2em;
+        
+        #volumeSlider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100px;
+            height: 4px;
+            background: var(--secondary-color);
+            border-radius: 2px;
+            cursor: pointer;
+            margin-left: 10px;
         }
-
+        
+        #volumeSlider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 12px;
+            height: 12px;
+            background: var(--text-color);
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+        
+        #volumeSlider:hover::-webkit-slider-thumb {
+            background: var(--primary-color);
+        }
     </style>
 </head>
 <body>
 
+    <audio id="audioPlayer" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+
     <div class="app-container">
 
         <aside class="sidebar">
-            <h2 style="padding: 0 20px; color: var(--primary-color); margin-bottom: 30px;">StreamWave</h2>
-            
-            <a href="#" class="active"><span class="icon">🏠</span> Home</a>
-            <a href="#"><span class="icon">🔍</span> Search</a>
-            <a href="#"><span class="icon">📚</span> Your Library</a>
-
+            <h2 style="padding: 0 20px; color: var(--primary-color);">StreamWave</h2>
+            <a href="#" class="active"><span style="margin-right: 15px;">🏠</span> Home</a>
+            <a href="#"><span style="margin-right: 15px;">🔍</span> Search</a>
+            <a href="#"><span style="margin-right: 15px;">📚</span> Your Library</a>
             <hr style="margin: 15px 20px; border-color: var(--hover-color);">
-
             <h3>Playlists</h3>
-            <a href="#"><span class="icon">▶️</span> Daily Mix</a>
-            <a href="#"><span class="icon">🎧</span> Workout Jams</a>
-            <a href="#"><span class="icon">☕</span> Chill Vibes</a>
-            <a href="#"><span class="icon">➕</span> Create Playlist</a>
-
+            <a href="#"><span style="margin-right: 15px;">▶️</span> Chillstep Radio</a>
+            <a href="#"><span style="margin-right: 15px;">➕</span> Create Playlist</a>
         </aside>
 
         <main class="main-content">
+            <h1>Featured Tracks</h1>
             
-            <h1>Good Afternoon!</h1>
-            
-            <section>
-                <h2>Quick Picks</h2>
-                <div class="music-grid" style="grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));">
-                    <div class="card" style="display: flex; align-items: center; padding: 10px;">
-                        <img src="placeholder-album.png" alt="Recent Album" style="width: 50px; height: 50px; margin: 0; border-radius: 50%;">
-                        <h4 style="margin-left: 15px;">Top Global Hits</h4>
-                    </div>
-                    </div>
+            <section class="music-grid">
+                <div class="card" onclick="loadTrack('SoundHelix-Song-1.mp3', 'SoundHelix Song 1', 'SoundHelix')">
+                    <img src="placeholder-album1.png" alt="Album Cover">
+                    <h4>SoundHelix Song 1</h4>
+                    <p>The best synthwave tracks for a late night journey.</p>
+                </div>
+                <div class="card" onclick="loadTrack('SoundHelix-Song-1.mp3', 'Focus Flow Tune', 'SoundHelix')">
+                    <img src="placeholder-album2.png" alt="Album Cover">
+                    <h4>Focus Flow Tune</h4>
+                    <p>Instrumental beats for deep work sessions.</p>
+                </div>
             </section>
-
-            <hr style="border-color: var(--secondary-color); margin: 30px 0;">
-
-            <section>
-                <h2>Made For You</h2>
-                <div class="music-grid">
-                    <div class="card">
-                        <img src="placeholder-playlist1.png" alt="Playlist Cover">
-                        <h4>Indie Mix</h4>
-                        <p>Your weekly discovery of new independent music.</p>
-                    </div>
-                    <div class="card">
-                        <img src="placeholder-playlist2.png" alt="Playlist Cover">
-                        <h4>Road Trip Rock</h4>
-                        <p>Anthems for the open highway.</p>
-                    </div>
-                    <div class="card">
-                        <img src="placeholder-playlist3.png" alt="Playlist Cover">
-                        <h4>Focus Flow</h4>
-                        <p>Instrumental beats for deep work sessions.</p>
-                    </div>
-                    <div class="card">
-                        <img src="placeholder-playlist4.png" alt="Playlist Cover">
-                        <h4>90s Rewind</h4>
-                        <p>The best pop and rock from a nostalgic decade.</p>
-                    </div>
-                    </div>
-            </section>
-
         </main>
-
     </div>
     
     <footer class="player-bar">
         
         <div class="song-info">
-            <img src="placeholder-song.png" alt="Album Cover">
+            <img id="trackCover" src="placeholder-song.png" alt="Album Cover">
             <div>
-                <h4>Song Title Name</h4>
-                <p style="color: var(--light-text);">Artist Name</p>
+                <h4 id="trackTitle">Ready to Play</h4>
+                <p id="trackArtist" style="color: var(--light-text);">Select a track above</p>
             </div>
             <button style="background: none; border: none; color: var(--text-color); margin-left: 15px; cursor: pointer;">❤️</button>
         </div>
@@ -270,41 +293,113 @@
             <div class="control-buttons">
                 <button title="Shuffle">🔁</button>
                 <button title="Previous">⏮️</button>
-                <button title="Play/Pause">▶️</button> <button title="Next">⏭️</button>
+                <button id="playPauseBtn" title="Play">▶️</button>
+                <button title="Next">⏭️</button>
                 <button title="Repeat">🔂</button>
             </div>
             <div class="progress-bar-container">
-                <span class="time current-time">0:45</span>
-                <div class="progress-bar">
-                    <div class="progress"></div>
+                <span class="time" id="currentTime">0:00</span>
+                <div id="progressBar">
+                    <div id="progress">
+                        <span id="progressHandle"></span>
+                    </div>
                 </div>
-                <span class="time total-time">3:20</span>
+                <span class="time" id="durationTime">0:00</span>
             </div>
         </div>
 
         <div class="volume-control">
-            <span class="icon">🔊</span>
-            <input type="range" min="0" max="100" value="70" style="width: 100px; cursor: pointer;">
-            <button style="background: none; border: none; color: var(--text-color); margin-left: 15px; cursor: pointer;">🎶</button> </div>
+            <span id="volumeIcon">🔊</span>
+            <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.7">
+            <button style="background: none; border: none; color: var(--text-color); margin-left: 15px; cursor: pointer;">📖</button>
+        </div>
 
     </footer>
 
     <script>
-        // Placeholder for JavaScript functionality
-        // Example: Toggling the play button text/icon
-        document.querySelector('.control-buttons button:nth-child(3)').addEventListener('click', function() {
-            if (this.textContent === '▶️') {
-                this.textContent = '⏸️';
-                this.title = 'Pause';
-                console.log('Music playing...');
+        const audio = document.getElementById('audioPlayer');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const progress = document.getElementById('progress');
+        const progressBar = document.getElementById('progressBar');
+        const currentTimeEl = document.getElementById('currentTime');
+        const durationTimeEl = document.getElementById('durationTime');
+        const volumeSlider = document.getElementById('volumeSlider');
+        const volumeIcon = document.getElementById('volumeIcon');
+        const trackTitleEl = document.getElementById('trackTitle');
+        const trackArtistEl = document.getElementById('trackArtist');
+
+        // --- 1. Core Playback Controls (Usable Feature) ---
+        playPauseBtn.addEventListener('click', () => {
+            if (audio.paused || audio.ended) {
+                audio.play();
             } else {
-                this.textContent = '▶️';
-                this.title = 'Play';
-                console.log('Music paused.');
+                audio.pause();
             }
         });
 
-        // Add more JS for sidebar navigation, search, volume control, etc.
+        audio.addEventListener('play', () => {
+            playPauseBtn.innerHTML = '⏸️';
+            playPauseBtn.title = 'Pause';
+        });
+
+        audio.addEventListener('pause', () => {
+            playPauseBtn.innerHTML = '▶️';
+            playPauseBtn.title = 'Play';
+        });
+        
+        // --- 2. Track Loading (Usable Feature) ---
+        function loadTrack(filename, title, artist) {
+            // In a real app, this would change the entire track URL
+            // Since we use one demo URL, we just update the info
+            trackTitleEl.textContent = title;
+            trackArtistEl.textContent = artist;
+            audio.load(); // Reloads the audio element (important if we were changing sources)
+            audio.play();
+        }
+
+        // --- 3. Progress Bar & Time Updates (Usable Feature) ---
+        audio.addEventListener('loadedmetadata', () => {
+            // Sets the total duration once the track info is loaded
+            durationTimeEl.textContent = formatTime(audio.duration);
+        });
+
+        audio.addEventListener('timeupdate', () => {
+            const progressPercent = (audio.currentTime / audio.duration) * 100;
+            progress.style.width = `${progressPercent}%`;
+            currentTimeEl.textContent = formatTime(audio.currentTime);
+        });
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = Math.floor(seconds % 60);
+            return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+        }
+
+        // --- 4. Seek Functionality (Usable Feature) ---
+        progressBar.addEventListener('click', (e) => {
+            const clickX = e.offsetX; // X position of the click relative to the progress bar
+            const width = progressBar.offsetWidth;
+            const seekTime = (clickX / width) * audio.duration;
+            audio.currentTime = seekTime;
+        });
+
+        // --- 5. Volume Control (Usable Setting) ---
+        volumeSlider.addEventListener('input', (e) => {
+            const volume = e.target.value;
+            audio.volume = volume;
+            
+            // Update the visual icon based on volume level
+            if (volume == 0) {
+                volumeIcon.textContent = '🔇';
+            } else if (volume < 0.5) {
+                volumeIcon.textContent = '🔉';
+            } else {
+                volumeIcon.textContent = '🔊';
+            }
+        });
+        
+        // Initialize volume
+        audio.volume = volumeSlider.value;
     </script>
 
 </body>
