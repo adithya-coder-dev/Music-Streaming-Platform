@@ -41,62 +41,20 @@ body {
     transition: background-color 0.3s;
 }
 
-/* --- Login Screen Styles --- */
-.auth-screen {
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--bg-medium);
-}
-
-.login-box {
-    background-color: var(--bg-light);
-    padding: 40px;
-    border-radius: 8px;
-    width: 350px;
-    text-align: center;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-}
-
-.login-box .logo {
-    font-size: 32px;
-    margin-bottom: 20px;
-}
-
-#login-form input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 15px;
-    border: 1px solid var(--input-bg);
-    border-radius: 4px;
-    background-color: var(--input-bg);
-    color: var(--text-light);
-    font-size: 16px;
-}
-
-#login-form button {
-    width: 100%;
-    padding: 12px;
-    background-color: var(--accent-color);
-    border: none;
-    border-radius: 50px;
-    color: #121212;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.error-message {
-    color: var(--error-color);
-    margin-top: 10px;
-    font-size: 14px;
-}
+/* --- Login Screen Styles (REMOVED) --- 
+The following sections have been deleted:
+.auth-screen
+.login-box
+.login-box .logo
+#login-form input
+#login-form button
+.error-message 
+*/
 
 /* --- Main Layout --- */
 #app-container {
     height: 100vh;
+    display: flex; /* Ensure it displays correctly as the top-level container */
     flex-direction: column; 
 }
 
@@ -157,7 +115,8 @@ body {
     gap: 10px;
 }
 
-.logout-btn {
+/* The logout button is removed from HTML, but keeping the style in case a button remains */
+.logout-btn { 
     background-color: var(--bg-medium);
     color: var(--text-medium);
     border: 1px solid var(--text-medium);
